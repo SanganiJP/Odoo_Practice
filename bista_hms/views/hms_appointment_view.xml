@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="hms_appointment_from_view" model="ir.ui.view">
+        <field name="name">hms appointment form</field>
+        <field name="model">hms.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Appointment">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Appointment Form">
+                            <field name="patient_id"/>
+                            <field name="appointment_date"/>
+                            <field name="appointment_reason"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

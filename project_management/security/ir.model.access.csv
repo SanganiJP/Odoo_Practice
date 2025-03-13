@@ -1,0 +1,7 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_project,access.project,model_project_detail,,1,1,1,1
+access_project_lead,access.projectlead,model_lead_info,,1,1,1,1
+access_project_types,access.project_types,model_project_types,,1,1,1,1
+access_project_info_wizard_id,access.project_info_wizard,model_project_info_wizard,,1,1,1,1
+
+

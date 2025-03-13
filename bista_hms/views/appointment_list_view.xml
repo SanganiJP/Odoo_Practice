@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="appointment_form_view" model="ir.ui.view">
+        <field name="name">appointment.from.view</field>
+        <field name="model">hms.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Appointment From">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Appointment Form">
+                            <field name="patient_id"/>
+                            <field name="appointment_date"/>
+                            <field name="appointment_reason"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="appointment_list_view" model="ir.ui.view">
+        <field name="name">hms.appointment.list.view</field>
+        <field name="model">hms.appointment</field>
+        <field name="arch" type="xml">
+            <list string="Appointments">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="appointment_date"/>
+                <field name="appointment_reason"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_appointment_form" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">hms.appointment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="appointment_form_menu_id" name="Appointment" parent="res_patient_main_menu_id"
+              action="action_appointment_form"/>
+</odoo>
