@@ -6,6 +6,8 @@ from odoo import fields, models, api
 from odoo.exceptions import UserError
 from datetime import date
 
+from odoo.fields import Many2one
+
 BLOOD_GROUP = [('A+', 'A+ve'),
                ('B+', 'B+ve'),
                ('O+', 'O+ve'),
@@ -15,6 +17,16 @@ BLOOD_GROUP = [('A+', 'A+ve'),
                ('O-', 'O-ve'),
                ('AB-', 'AB-ve')]
 
+AGE_CATEGORY = [('Senior_Citizen', 'Senior Citizen'),
+                ('Adult', 'Adult'),
+                ('Minor', 'Minor'),
+                ('Child', 'Child')]
+
+GUARDIAN_TYPE = [('parent','Parent'),
+                ('Sibling','Sibling'),
+                ('Relative','Relative'),
+                ('Friend','Friend'),
+                ('Other','Other')]
 
 class ResPatient(models.Model):
     _name = "res.patient"
@@ -29,6 +41,10 @@ class ResPatient(models.Model):
     phone = fields.Char(string="Phone", required=True)
     email = fields.Char(string="Email")
     mobile = fields.Char(string="Mobile")
+    age_category = fields.Selection(AGE_CATEGORY, string="Patient Category")
+    guardian_type = fields.Selection(GUARDIAN_TYPE, string="Guardian")
+    guardian_id = fields.Many2one("res.partner", string="Guardian Name")
+    patient_ids = fields.One2many("hms.appointment", "patient_id",string="Patient Appointments")
 
     @api.model_create_multi
     def create(self, val_list):
@@ -36,11 +52,30 @@ class ResPatient(models.Model):
         for record in res:
             record.patient_code = self.env["ir.sequence"].next_by_code('res.patient')
         return res
-
         # for val in val_list:
         #     val.update({'patient_code':self.env["ir.sequence"].next_by_code('res.patient')})
         # res = super(ResPatient, self).create(val_list)
         # return res
+
+    @api.onchange('date_of_birth')
+    def select_patient_category(self):
+        today = date.today()
+        rd = relativedelta(today, self.date_of_birth)
+        age = rd.years
+        if age > 60:
+            self.age_category = "Senior_Citizen"
+        if age < 60 and age >= 18:
+            self.age_category = "Adult"
+        if age < 18 and age > 10:
+            self.age_category = "Minor"
+        if age <= 10:
+            self.age_category = "Child"
+
+    # @api.onchange('age_category')
+    # def select_guardian_filed(self):
+    #     if self.age_category in ['Child','Minor']:
+    #         if not self.guardian_type:
+    #             raise UserError("Please select your guardian!")
 
     # def write(self, vals):
     #     if 'phone' in vals:
@@ -65,6 +100,7 @@ class ResPatient(models.Model):
             'res_model': 'hms.appointment',
             'view_id': view_id,
             'target': 'current',
+            'context': {'default_patient_id': self.id, 'child': True}
         }
 
     @api.constrains('date_of_birth')
@@ -77,11 +113,9 @@ class ResPatient(models.Model):
         # current_year = date.today().year
         # age = current_year - dob_year
         # self.age = f'{age}Years'
-
         # dob = date(self.date_of_birth.year,self.date_of_birth.month,self.date_of_birth.day)
         # current_date = date.today()
         # date_difference = current_date - dob
-        #
         # d = date_difference.days
         # m = int(d/30.55)
         # y = int(d/365.25)
@@ -90,4 +124,8 @@ class ResPatient(models.Model):
 
         today = date.today()
         rd = relativedelta(today, self.date_of_birth)
-        self.age = f'{rd.years}Years {rd.months}Months'
+        self.age = f'{rd.years}Years {rd.months}Months {rd.days}Days'
+
+    def _patient_counter(self):
+        patient_count = self.env['res.patient'].search([('age', '>', 40)])
+        print(len(patient_count))

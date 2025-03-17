@@ -7,7 +7,12 @@
         <field name="arch" type="xml">
             <form string="Appointment">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                    <button name="action_confirm" string="Confirm" type="object" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_waiting" string="Waiting" type="object" invisible="state != 'confirm'" class="btn-primary"/>
+                    <button name="action_in_consultation" string="In Consultation" type="object" invisible="state != 'waiting'" class="btn-primary"/>
+                    <button name="action_done" string="Done" type="object" invisible="state != 'in_consultation'" class="btn-primary"/>
+<!--                    <button name="action_cancel" string="Cancel" type="object" invisible="state != 'draft'" class="btn-primary"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,waiting,in_consultation,done,cancel"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -15,15 +20,51 @@
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
-                    <group>
-                        <group string="Appointment Form">
+                    <group string="Appointment Form">
+                        <group>
                             <field name="patient_id"/>
                             <field name="appointment_date"/>
+                            <field name="age_category"/>
                             <field name="appointment_reason"/>
+                        </group>
+                        <group>
+                            <field name="guardian_type"/>
+                            <field name="guardian_id"/>
+                            <field name="consultation_start"/>
+                            <field name="consultation_end"/>
+                            <field name="consultation_time"/>
+                            <field name="draft_state_start_time"/>
+                            <field name="service_product_id"/>
                         </group>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
+
+    <record id="appointment_list_view" model="ir.ui.view">
+        <field name="name">hms.appointment.list.view</field>
+        <field name="model">hms.appointment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="appointment_date"/>
+                <field name="appointment_reason"/>
+                <field name="age_category"/>
+                <field name="guardian_type"/>
+                <field name="guardian_id"/>
+                <field name="service_product_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_appointment_form" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">hms.appointment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="appointment_form_menu_id" name="Appointment" parent="res_patient_main_menu_id"
+              action="action_appointment_form"/>
 </odoo>

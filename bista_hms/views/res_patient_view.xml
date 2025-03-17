@@ -23,13 +23,33 @@
                             <field name="phone"/>
                             <field name="mobile"/>
                             <field name="email"/>
+                            <field name="guardian_id"/>
                         </group>
                         <group>
                             <field name="blood_group"/>
                             <field name="age"/>
+                            <field name="age_category"/>
                             <field name="date_of_birth"/>
+                            <field name="guardian_type" required="age_category in ['Child','Minor']"/>
                             <field name="previous_diseases"/>
                         </group>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="Appointments">
+                                <field name="patient_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="patient_id"/>
+                                        <field name="appointment_date"/>
+                                        <field name="appointment_reason"/>
+                                        <field name="age_category"/>
+                                        <field name="guardian_type"/>
+                                        <field name="guardian_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                     </group>
                 </sheet>
             </form>
@@ -46,6 +66,8 @@
                 <field name="blood_group"/>
                 <field name="date_of_birth"/>
                 <field name="age"/>
+                <field name="age_category"/>
+                <field name="guardian_type"/>
                 <field name="phone"/>
                 <field name="email"/>
                 <field name="mobile"/>

@@ -15,14 +15,17 @@
 
     'author': "Bista Solution Pvt. Ltd.",
 
-    'depends': ['base'],
+    'depends': ['base','product'],
 
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
         'data/appointment_ir_sequence.xml',
+        'data/ir_cron.xml',
+        'data/ir_cron_week_report.xml',
+        'data/ir_cron_auto_cancel.xml',
         'views/res_patient_view.xml',
         'views/hms_appointment_view.xml',
-        'views/appointment_list_view.xml'
+        'views/res_doctor_view.xml',
     ],
 }

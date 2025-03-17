@@ -1,1 +1,1 @@
-from . import res_patient, appointment
+from . import res_patient, appointment, res_doctor, hospital_specialization, hospital
