@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="date_practice_wizard_form" model="ir.ui.view">
+            <field name="name">date.practice.wizard.form</field>
+            <field name="model">date.practice.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="date_of_birth"/>
+                            <field name="current_date"/>
+                            <field name="age"/>
+                            <field name="dob"/>
+                            <field name="my_age"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+</odoo>
+

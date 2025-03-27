@@ -1,7 +1,6 @@
 from itertools import count
 
 from dateutil.relativedelta import relativedelta
-
 from odoo import fields, models, api
 from odoo.exceptions import UserError
 from datetime import date

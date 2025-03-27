@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="college_teacher_from_view" model="ir.ui.view">
+        <field name="name">college.teacher.from.view</field>
+        <field name="model">college.teacher</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="subject"/>
+                        <field name="total_classroom"/>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="classroom">
+                                <field name="classroom_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="teacher_id"/>
+                                        <field name="total_student"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="college_teacher_list_view" model="ir.ui.view">
+        <field name="name">college.teacher.list.view</field>
+        <field name="model">college.teacher</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="subject"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_college_teacher" model="ir.actions.act_window">
+        <field name="name">college teacher</field>
+        <field name="res_model">college.teacher</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem name="Teacher" id="college_teacher_menu_id" parent="college_student_main_menu_id"
+              action="action_college_teacher"/>
+</odoo>

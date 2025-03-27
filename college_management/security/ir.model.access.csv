@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_college_student,college_student,model_college_student,,1,1,1,1
+access_college_classroomt,college_classroom,model_college_classroom,,1,1,1,1
+access_college_teacher,college_teacher,model_college_teacher,,1,1,1,1
+
+
+

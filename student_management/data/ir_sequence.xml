@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<odoo noupdate="1">
+    <record id="sequence_registration_id" model="ir.sequence">
+        <field name="name">res student</field>
+        <field name="code">res.student</field>
+        <field name="prefix">STD-</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

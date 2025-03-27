@@ -1,0 +1,29 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+
+<!--<odoo>-->
+<!--&lt;!&ndash;    previous_year_marks_views.xml&ndash;&gt;-->
+<!--    <record id="previous_year_marks_list_view" model="ir.ui.view">-->
+<!--        <field name="name">previous.year.marks.list.view</field>-->
+<!--        <field name="model">previous.year.mark</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form>-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <field name="previous_year_marks_id"/>-->
+<!--                        <field name="subject_name"/>-->
+<!--                        <field name="total_marks"/>-->
+<!--                        <field name="obtained_marks_in_exam"/>-->
+<!--                        <field name="obtained_marks_in_viva"/>-->
+<!--                        <field name="total_obtained_marks"/>-->
+<!--                    </group>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_res_subject" model="ir.actions.act_window">-->
+<!--        <field name="name">subject subject</field>-->
+<!--        <field name="res_model">previous.year.mark</field>-->
+<!--        <field name="view_mode">from</field>-->
+<!--    </record>-->
+<!--</odoo>-->
