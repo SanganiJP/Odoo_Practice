@@ -1,2 +1,2 @@
 from . import res_patient, appointment, res_doctor, hospital_specialization, hospital, prescription_line, hms_prescription, sale_order
-from . import res_partner, sale_order_line
+from . import res_partner, sale_order_line, stock_picking

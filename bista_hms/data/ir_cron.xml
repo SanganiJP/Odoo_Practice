@@ -11,5 +11,56 @@
             <field name="interval_type">hours</field>
             <field name="active">True</field>
         </record>
+
+        <record id="weekly_cancelled_appointment_report" model="ir.cron">
+            <field name="name">Cancelled appointments report</field>
+            <field name="model_id" ref="model_hms_appointment"/>
+            <field name="state">code</field>
+            <field name="code">model._weekly_cancelled_appointment_report()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="auto_cancel_draft_appointment" model="ir.cron">
+            <field name="name">Auto cancel</field>
+            <field name="model_id" ref="model_hms_appointment"/>
+            <field name="state">code</field>
+            <field name="code">model._auto_cancel_draft_appointment()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="week_report_generator" model="ir.cron">
+            <field name="name">Weekly Report</field>
+            <field name="model_id" ref="model_hms_appointment"/>
+            <field name="state">code</field>
+            <field name="code">model._weekly_report_generator()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="auto_create_appointment" model="ir.cron">
+            <field name="name">Auto create appointment</field>
+            <field name="model_id" ref="model_res_patient"/>
+            <field name="state">code</field>
+            <field name="code">model._weekly_auto_create_appointment()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="_action_create_weekly_prescription_report" model="ir.cron">
+            <field name="name">Create weekly prescription report</field>
+            <field name="model_id" ref="model_hms_prescription"/>
+            <field name="state">code</field>
+            <field name="code">model._create_weekly_prescription_report()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">True</field>
+        </record>
+
     </data>
 </odoo>

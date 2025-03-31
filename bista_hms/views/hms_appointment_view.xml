@@ -11,9 +11,10 @@
                     <button name="action_waiting" string="Waiting" type="object" invisible="state != 'confirm'" class="btn-primary"/>
                     <button name="action_in_consultation" string="In Consultation" type="object" invisible="state != 'waiting'" class="btn-primary"/>
                     <button name="action_done" string="Done" type="object" invisible="state != 'in_consultation'" class="btn-primary"/>
-<!--                    <button name="action_cancel" string="Cancel" type="object" invisible="state != 'draft'" class="btn-primary"/>-->
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,waiting,in_consultation,done,cancel"/>
+                    <button name="action_date_practice_wizard" string="Date Operation" type="object" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
+
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -53,8 +54,10 @@
                 <field name="appointment_reason"/>
                 <field name="age_category"/>
                 <field name="guardian_type"/>
+                <field name="state"/>
                 <field name="guardian_id"/>
                 <field name="service_product_id"/>
+                <field name="consultation_time"/>
             </list>
         </field>
     </record>

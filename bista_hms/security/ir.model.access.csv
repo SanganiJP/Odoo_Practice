@@ -3,4 +3,9 @@ access_res_patient,access.respatient,model_res_patient,,1,1,1,1
 access_patient_appointment,access.patient.appointment,model_hms_appointment,,1,1,1,1
 access_res_doctor,access.doctor,model_res_doctor,,1,1,1,1
 access_hospital_specialization,access.hospital.specialization,model_hospital_specialization,,1,1,1,1
-access_hospital_hospital,accesss.hospital.hospital,model_hospital_hospital,,1,1,1,1
+access_hospital_hospital,access.hospital.hospital,model_hospital_hospital,,1,1,1,1
+aceess_prescription_line,access.prescription.line,model_prescription_line,,1,1,1,1
+aceess_hms_prescription,access.hms.prescription,model_hms_prescription,,1,1,1,1
+access_date_practice_wizard,access.date.practice,model_date_practice_wizard,,1,1,1,1
+
+

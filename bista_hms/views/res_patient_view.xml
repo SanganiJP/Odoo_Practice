@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <odoo>
-
     <record id="res_patient_from_view" model="ir.ui.view">
         <field name="name">patient.from.view</field>
         <field name="model">res.patient</field>
@@ -12,6 +11,16 @@
                     <button name="action_calculate_age" string="Calculate Age" type="object"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_view_of_appointment" type="object"
+                                class="oe_stat_button" icon="fa-calendar" string="Appointments">
+                            <field name="appointment_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_open_prescription" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o" string="Prescriptions">
+                            <field name="prescription_count" widget="statinfo"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="patient_code" readonly="1"/>
@@ -19,10 +28,10 @@
                     </div>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="phone"/>
-                            <field name="mobile"/>
-                            <field name="email"/>
+                            <field name="name" />
+                            <field name="phone" />
+                            <field name="mobile" />
+                            <field name="email" />
                             <field name="guardian_id"/>
                         </group>
                         <group>
@@ -32,6 +41,7 @@
                             <field name="date_of_birth"/>
                             <field name="guardian_type" required="age_category in ['Child','Minor']"/>
                             <field name="previous_diseases"/>
+                            <field name="weekly_visit"/>
                         </group>
                     </group>
                     <group>
@@ -71,6 +81,7 @@
                 <field name="phone"/>
                 <field name="email"/>
                 <field name="mobile"/>
+                <field name="weekly_visit"/>
             </list>
         </field>
     </record>

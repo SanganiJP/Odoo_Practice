@@ -21,7 +21,7 @@ class Appointment(models.Model):
 
     name = fields.Char(string="Appointment ID", copy=False, readonly=True, index=True, default="New")
     patient_id = fields.Many2one("res.patient", string="Name", required=True)
-    appointment_date = fields.Date(string="Date", required=True, default=datetime.today())
+    appointment_date = fields.Date(string="Date", required=True, default=date.today())
     appointment_reason = fields.Text(string="Reason")
     state = fields.Selection([('draft', 'Draft'),
                               ('confirm', 'Confirm'),
@@ -33,8 +33,8 @@ class Appointment(models.Model):
     age_category = fields.Selection(AGE_CATEGORY, string="Patient Category")
     guardian_type = fields.Selection(GUARDIAN_TYPE, string="Guardian")
     guardian_id = fields.Many2one("res.partner", string="Guardian Name")
-    consultation_start = fields.Datetime(string="Start Time")
-    consultation_end = fields.Datetime(string="End Time")
+    consultation_start = fields.Datetime(string="Consultation Start Time")
+    consultation_end = fields.Datetime(string="Consultation End Time")
     consultation_time = fields.Float(string="Consultation Time")
     draft_state_start_time = fields.Datetime(string="Draft state start time")
     # draft_state_time = fields.Float(string="Draft state time")
@@ -47,47 +47,22 @@ class Appointment(models.Model):
             record.name = self.env["ir.sequence"].next_by_code('hms.appointment')
         return res
 
-    # @api.onchange('appointment_date')
-    # def validate_appointment_date(self):
-    #     if self.appointment_date.day < datetime.today().day:
-    #         raise UserError("Appointment date should be current date or further date!")
-
     @api.onchange('patient_id')
     def onchange_patient_id(self):
         if self.patient_id:
             self.guardian_type = self.patient_id.guardian_type
             self.age_category = self.patient_id.age_category
-            self.guardian_id = self.patient_id.guardian_id
+            self.guardian_id = self.patient_id.guardian_id.name
             self.draft_state_start_time = datetime.now()
 
-    # @api.constrains('appointment_date')
-    # def validate_appointment(self):
-    #     patient_name = self.patient_id.id
-    #     # print(patient_name)
-    #     patient_data = self.env['hms.appointment'].search([('patient_id','=',patient_name)])
-    #     for patient in patient_data:
-    #         if patient.appointment_date == self.appointment_date:
-    #             raise ValidationError("You can not book two appointment on same day!")
-
-    # @api.model_create_multi
-    # def create(self, val_list):
-    #     res = super(Appointment, self).create(val_list)
-    #     for record in res:
-    #         patient_name = record.patient_id.id
-    #         # print(patient_name)
-    #         patient_data = self.env['hms.appointment'].search([('patient_id', '=', patient_name)])
-    #         for patient in patient_data:
-    #             if patient.appointment_date == self.appointment_date:
-    #                 raise ValidationError("You can not book two appointment on same day!")
-    #     return res
-
     @api.constrains('appointment_date')
-    def _check_license_no(self):
+    def appointment_date_validation(self):
         for rec in self:
-            domain = [('patient_id', '=', rec.patient_id.id),('appointment_date','=',rec.appointment_date)]
-            count = self.sudo().search_count(domain)
+            # diff = self.appointment_date - rec.appointment_date
+            domain = [('patient_id', '=', rec.patient_id.id),('appointment_date', '=', rec.appointment_date)]
+            count = self.env['hms.appointment'].search_count(domain)
             if count > 1:
-                raise ValidationError("You can not book two appointment on same day!")
+                raise ValidationError("You have already booked appointment this day!")
 
     @api.constrains('appointment_date')
     def validate_appointment_date(self):
@@ -95,7 +70,6 @@ class Appointment(models.Model):
             raise UserError("Appointment date should be current date or further date!")
 
     def action_confirm(self):
-        # self.draft_state_start_time = datetime.now()
         self.state = 'confirm'
 
     def action_waiting(self):
@@ -108,14 +82,9 @@ class Appointment(models.Model):
     def action_done(self):
         self.state = 'done'
         self.consultation_end = datetime.now()
-        diff = self.consultation_end- self.consultation_start
+        diff = self.consultation_end - self.consultation_start
         total_seconds = diff.total_seconds()
         self.consultation_time = total_seconds / 60
-
-    # def action_cancel(self):
-    #     for record in self:
-    #         if record.state != "cancel":
-    #             record.state = "cancel"
 
     def _weekly_report_generator(self):
         result = {}
@@ -123,7 +92,7 @@ class Appointment(models.Model):
         start_of_week = today - timedelta(days=today.isoweekday() % 7)
         end_of_week = start_of_week + timedelta(weeks=1)
 
-        appointments = self.search([
+        appointments = self.env["hms.appointment"].search([
             ('appointment_date', '>=', start_of_week),
             ('appointment_date', '<', end_of_week),
         ])
@@ -136,8 +105,9 @@ class Appointment(models.Model):
             if patient.consultation_time > 60:
                 patient_name.append(patient.patient_id.name)
 
-        total_time_in_hours = f'{round(total_consultation_time/60,2)} Hours'
-        result.update({'total_appointment':total_appointment,'Total consultation time':total_time_in_hours, 'Patients':patient_name})
+        total_time_in_hours = f'{round(total_consultation_time / 60, 2)} Hours'
+        result.update({'total_appointment': total_appointment, 'Total consultation time': total_time_in_hours,
+                       'Patients': patient_name})
         print(result)
 
     def find_draft_state_time(self):
@@ -147,21 +117,21 @@ class Appointment(models.Model):
 
     def _auto_cancel_draft_appointment(self):
         # print("i am in _auto_cancel_draft_appointment method")
-        appointments = self.search([('state', '=', 'draft')])
+        appointments = self.env['hms.appointment'].search([('state', '=', 'draft')])
 
         for appointment in appointments:
             draft_time = appointment.find_draft_state_time()
             if draft_time > 24:
                 appointment.state = 'cancel'
 
-    @api.constrains('appointment_date')
     def _weekly_cancelled_appointment_report(self):
         weekly_cancelled_appointment = []
         today = date.today()
-        start_of_week = today - timedelta(days=today.isoweekday() % 7)
-        end_of_week = start_of_week + timedelta(weeks=1)
+        start_of_week = today - timedelta(days=7)
+        # end_of_week = start_of_week + timedelta(weeks=1)
+        end_of_week = today
 
-        appointments = self.search([
+        appointments = self.env["hms.appointment"].search([
             ('appointment_date', '>=', start_of_week),
             ('appointment_date', '<', end_of_week),
             ('state', '=', 'cancel')
@@ -169,12 +139,24 @@ class Appointment(models.Model):
 
         for appointment in appointments:
             cancelled_appointment_data = {}
-            appointment_number = appointment.name
-            patient_name = appointment.patient_id.name
-            date_of_appointment = appointment.appointment_date
-
-            cancelled_appointment_data.update({'Appointment number':appointment_number,'Patient name':patient_name, 'Date of appointment':date_of_appointment})
+            appointment_date = appointment.appointment_date
+            cancelled_appointment_data.update({'Appointment number': appointment.name,
+                                               'Patient name': appointment.patient_id.name,
+                                               'Date of appointment': appointment_date.date()
+                                               })
             weekly_cancelled_appointment.append(cancelled_appointment_data)
-
         print(weekly_cancelled_appointment)
+
+    def action_date_practice_wizard(self):
+        view_id = self.env.ref('bista_hms.date_practice_wizard_form').id
+        print("view_id", view_id)
+
+        return {
+            'name': 'Starting Date',
+            'view_mode': 'form',
+            'res_model': 'date.practice.wizard',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
 

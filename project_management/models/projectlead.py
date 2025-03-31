@@ -18,6 +18,7 @@ class Lead(models.Model):
     def action_project_info_wizard(self):
         view_id = self.env.ref('project_management.project_info_wizard_wizard').id
         print("view_id", view_id)
+
         return {
             'name': 'Starting Date',
             'view_mode': 'form',

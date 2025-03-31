@@ -16,4 +16,10 @@
         <field name="prefix">P-</field>
         <field name="padding">4</field>
     </record>
+    <record id="sequence_hms_prescription" model="ir.sequence">
+        <field name="name">hms prescription</field>
+        <field name="code">hms.prescription</field>
+        <field name="prefix">PRE-</field>
+        <field name="padding">4</field>
+    </record>
 </odoo>

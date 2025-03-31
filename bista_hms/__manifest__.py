@@ -15,7 +15,7 @@
 
     'author': "Bista Solution Pvt. Ltd.",
 
-    'depends': ['base','product','sale'],
+    'depends': ['base','product','sale','stock'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -29,7 +29,7 @@
         'views/prescription_line_view.xml',
         'views/sale_order_view.xml',
         'views/res_partner_view.xml',
-        'views/sale_order_line_view.xml',
+        'views/stock_picking_view.xml',
         'wizard/date_practice_wizard_view.xml',
     ],
 }
