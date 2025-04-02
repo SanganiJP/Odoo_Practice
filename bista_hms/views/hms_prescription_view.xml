@@ -11,15 +11,19 @@
                             class="btn-primary"/>
                     <button name="action_cancel" string="Cancel" type="object" invisible="state != 'draft'"
                             class="btn-primary"/>
-                    <button name="action_create_prescription_invoice" string="Create Invoice" type="object" invisible="state != 'confirm'"
+                    <button name="action_create_prescription_invoice" string="Create Invoice" type="object"
+                            invisible="state != 'confirm'"
+                            class="btn-primary"/>
+                    <button name="action_create_prescription_delivery" string="Create Delivery" type="object"
                             class="btn-primary"/>
                     <button name="action_prescription_line" string="Prescription Detail" type="object"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ready,done"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_prescription_delivery" type="object" invisible="state != 'confirm'"
+                        <button name="action_view_prescription_delivery" type="object"
                                 class="oe_stat_button" icon="fa-truck" string="Delivery">
+                            <field name="delivery_count" widget="statinfo"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -39,9 +43,11 @@
                             <field name="prescription_lines">
                                 <list>
                                     <field name="product_id"/>
-                                    <field name="quantity" sum="total quantity"/>
                                     <field name="price_unit"/>
-                                    <field name="total_amount" sum="Total amount"/>
+                                    <field name="quantity" />
+                                    <field name="delivered_qty"/>
+                                    <field name="total_amount" />
+<!--                                    <field name="total_amount" sum="Total amount"/>-->
                                 </list>
                             </field>
                         </page>

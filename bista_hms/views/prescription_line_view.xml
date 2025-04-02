@@ -11,6 +11,7 @@
                         <group>
                             <field name="product_id"/>
                             <field name="quantity"/>
+                            <field name="delivered_qty"/>
                             <field name="price_unit"/>
                             <field name="total_amount"/>
                         </group>
@@ -27,6 +28,7 @@
             <list>
                 <field name="product_id"/>
                 <field name="quantity"/>
+                <field name="delivered_qty"/>
                 <field name="price_unit"/>
                 <field name="total_amount"/>
             </list>

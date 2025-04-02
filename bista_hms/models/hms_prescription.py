@@ -1,7 +1,7 @@
 from datetime import date, timedelta
-from email.policy import default
 
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class HmsPrescription(models.Model):
@@ -16,8 +16,12 @@ class HmsPrescription(models.Model):
     lead_reference = fields.Char(string="Lead Reference")
     state = fields.Selection([('draft', 'Draft'),
                               ('confirm', 'Confirmed'),
+                              ('ready', 'Ready'),
+                              ('done','Done'),
                               ('cancel', 'Cancelled')],
                              string="Status", default='draft')
+    delivery_ids = fields.One2many("stock.picking","prescription_id",string="Deliveries")
+    delivery_count = fields.Integer(default=0, compute='_compute_count_delivery')
 
     @api.model_create_multi
     def create(self, val_list):
@@ -101,17 +105,73 @@ class HmsPrescription(models.Model):
         return prescription_line_val
 
 
+    def action_create_prescription_delivery(self):
+        self.state = 'ready'
+        delivery_vals = self.prepare_delivery_vals()
+        delivery_id = self.env['stock.picking'].create(delivery_vals)
+
+        delivery_line_vals = self.prepare_delivery_line_vals(delivery_id)
+        self.env['stock.move'].create(delivery_line_vals)
+
+        if not delivery_line_vals:
+            delivery_id.unlink()
+            raise UserError('Please add product to deliver!')
+
+        self.delivery_ids.action_confirm()
+        # delivery_id.button_validate()
+
+
+    def prepare_delivery_vals(self):
+        picking_type_id = self.env['stock.picking.type'].search([('code','=','outgoing')], limit=1)
+        values = {
+            'partner_id' : self.patient_id.partner_id.id,
+            'origin': self.prescription_code,
+            'lead_reference': self.lead_reference,
+            'location_id': picking_type_id.default_location_src_id.id,
+            'location_dest_id':picking_type_id.default_location_dest_id.id,
+            'picking_type_id':picking_type_id.id,
+            'prescription_id':self.id,
+        }
+        return values
+
+    def prepare_delivery_line_vals(self, delivery_id):
+        move_val = []
+        for line in self.prescription_lines:
+            total_qty = sum(line.move_ids.mapped('product_uom_qty'))
+            remainning_qty = line.quantity - total_qty
+
+            if remainning_qty > 0:
+                vals = {
+                    'name': line.product_id.display_name,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': remainning_qty,
+                    'location_id': delivery_id.location_id.id,
+                    'location_dest_id': delivery_id.location_dest_id.id,
+                    'picking_id': delivery_id.id,
+                    'picking_type_id': delivery_id.picking_type_id.id,
+                    'delivery_line_id': line.id,
+                }
+                move_val.append(vals)
+        return move_val
+
+
     def action_view_prescription_delivery(self):
         form_view_id = self.env.ref('stock.view_picking_form').id
+        list_view_id = self.env.ref('stock.vpicktree').id
 
         res = {
             'name': 'Delivery',
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
             'res_model': 'stock.picking',
+            'views': [(list_view_id, 'list'), (form_view_id, 'form')],
             'target': 'current',
-            'view_id': form_view_id,
-            'context': dict(default_partner_id=self.patient_id.partner_id.id, default_origin=self.prescription_code, default_lead_reference=self.lead_reference)
-            # 'context': dict(default_partner_id=self.partner_id.id, default_picking_type_id=picking_id.picking_type_id.id, default_origin=self.name, default_group_id=picking_id.group_id.id)
+            'domain': [('prescription_id','=',self.id)],
         }
+
         return res
+
+    @api.depends("delivery_ids.prescription_id")
+    def _compute_count_delivery(self):
+        for record in self:
+            self.delivery_count = self.env['stock.picking'].search_count([('prescription_id','=',record.id)])
