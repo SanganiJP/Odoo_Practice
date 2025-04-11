@@ -4,6 +4,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     extra_discount = fields.Integer(string="Extra Discount")
+    terms_and_conditions = fields.Text(string="Terms and Conditions")
+    use_customers_tc = fields.Boolean(string="Use Customer T&C")
 
     def write(self, vals):
         for record in self:

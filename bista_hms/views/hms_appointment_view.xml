@@ -12,6 +12,7 @@
                     <button name="action_in_consultation" string="In Consultation" type="object" invisible="state != 'waiting'" class="btn-primary"/>
                     <button name="action_done" string="Done" type="object" invisible="state != 'in_consultation'" class="btn-primary"/>
                     <button name="action_date_practice_wizard" string="Date Operation" type="object" class="btn-primary"/>
+                    <button name="action_send_appointment_mail" string="Send Mail" type="object" invisible="state != 'confirm'" class="btn-primary"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
 

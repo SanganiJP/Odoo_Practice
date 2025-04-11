@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="appointment_details_list_view" model="ir.ui.view">
+        <field name="name">appointment.details.list</field>
+        <field name="model">appointment.details</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" readonly="1"/>
+                <field name="patient_id"/>
+                <field name="main_complain"/>
+                <field name="contact_no"/>
+                <field name="age"/>
+                <field name="app_date_time"/>
+                <field name="appointment_creation_time"/>
+                <field name="doctor_appointment_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="appointment_details_form_view" model="ir.ui.view">
+        <field name="name">appointment.details.form</field>
+        <field name="model">appointment.details</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" string="Start consulting" type="object" class="btn-primary" invisible="state != 'confirm'"/>
+                    <button name="action_done" string="End consulting" type="object" class="btn-primary" invisible="state != 'consultation_begin'"/>
+                    <button name="action_cancel" string="Cancel consulting" type="object" class="btn-primary" invisible="state != 'confirm' and state != 'draft'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="main_complain"/>
+                            <field name="contact_no"/>
+                        </group>
+                        <group>
+                            <field name="age"/>
+                            <field name="age_category"/>
+                            <field name="guardian_type" required="age_category in ['minor', 'child']"/>
+                            <field name="guardian_id" required="age_category in ['minor', 'child']"/>
+                            <field name="doctor_appointment_id"/>
+                        </group>
+                        <group>
+                            <field name="app_date_time"/>
+                            <field name="consultation_start" invisible="state != 'consultation_begin' and state != 'done'"/>
+                            <field name="consultation_end" invisible=" state != 'consultation_begin' and state != 'done'"/>
+                            <field name="total_consultation_time" invisible=" state != 'consultation_begin' and state != 'done'"/>
+                            <field name="appointment_creation_time"/>
+                            <field name="service_product_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="appointment_details_action" model="ir.actions.act_window">
+        <field name="name">Appointment Details</field>
+        <field name="res_model">appointment.details</field>
+        <field name="view_mode">list,form</field>
+        <field name='view_id' ref='appointment_details_list_view'/>
+    </record>
+
+    <menuitem id="appointment_details_id" name='Appointments' parent='hms.hms_root' action='hms.appointment_details_action' sequence="5"/>
+</odoo>

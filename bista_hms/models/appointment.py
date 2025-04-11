@@ -59,7 +59,7 @@ class Appointment(models.Model):
     def appointment_date_validation(self):
         for rec in self:
             # diff = self.appointment_date - rec.appointment_date
-            domain = [('patient_id', '=', rec.patient_id.id),('appointment_date', '=', rec.appointment_date)]
+            domain = [('patient_id', '=', rec.patient_id.id), ('appointment_date', '=', rec.appointment_date)]
             count = self.env['hms.appointment'].search_count(domain)
             if count > 1:
                 raise ValidationError("You have already booked appointment this day!")
@@ -149,7 +149,6 @@ class Appointment(models.Model):
 
     def action_date_practice_wizard(self):
         view_id = self.env.ref('bista_hms.date_practice_wizard_form').id
-        print("view_id", view_id)
 
         return {
             'name': 'Starting Date',
@@ -160,3 +159,22 @@ class Appointment(models.Model):
             'target': 'new',
         }
 
+    def get_next_day_appointment_data(self):
+        next_day_date = date.today() + timedelta(days=1)
+
+        appointments = self.env["hms.appointment"].search([
+            ('state', '=', 'confirm'),
+            ('appointment_date', '=', next_day_date),
+        ])
+        return appointments
+
+    def _action_send_appointment_schedule_mail_to_admin(self):
+        """
+        Send next day's scheduled appointment to admin.
+        """
+        template_id = self.env.ref('bista_hms.email_template_next_day_appointment_mail')
+        template_id.send_mail(self.id, force_send=True)
+
+    def action_send_appointment_mail(self):
+        template_id = self.env.ref('bista_hms.email_template_appointment_confirmation')
+        template_id.send_mail(self.id, force_send=True)

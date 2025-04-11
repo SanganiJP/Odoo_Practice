@@ -20,4 +20,3 @@ class ResDoctor(models.Model):
             count = self.sudo().search_count(domain)
             if count > 1:
                 raise ValidationError("The license No should be unique")
-

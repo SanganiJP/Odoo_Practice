@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <!--Email template -->
+    <record id="email_template_appointment_confirmation" model="mail.template">
+        <field name="name">Appointment Confirmation</field>
+        <field name="model_id" ref="bista_hms.model_hms_appointment"/>
+        <field name="email_from">{{object.env.user.email}}</field>
+        <field name="email_to">{{object.patient_id.email}}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="subject">Appointment Confirmation : {{object.patient_id.name}}</field>
+        <field name="description">Sent to patient for appointment confirmation</field>
+        <field name="body_html" type="html">
+            <p>Hello,
+                <strong>
+                    <t t-out="object.patient_id.name"/>
+                </strong>
+            </p>
+            <br></br>
+            <p>Your appointment is schedule on<t t-out="object.appointment_date"/>.
+            </p>
+            <p>We are pleased to confirm your appointment with Dr. Mehul Kamaliya</p>
+            <p>If you have any questions or need to reschedule, please contact us.</p>
+            <br></br>
+            <br></br>
+            <p>Thank you</p>
+            <p>Best regards,</p>
+            <p>
+                <t t-out="object.env.user.name"/>
+            </p>
+        </field>
+    </record>
+
+    <record id="email_template_next_day_appointment_mail" model="mail.template">
+        <field name="name">Next Appointment Confirmation</field>
+        <field name="model_id" ref="bista_hms.model_hms_appointment"/>
+        <field name="email_from">{{object.env.user.company_id.email}}</field>
+        <field name="email_to">{{object.env.user.email}}</field>
+<!--        <field name="auto_delete" eval="True"/>-->
+        <field name="subject">Tomorrows Appointments Detail</field>
+        <field name="description">Sent to patient for appointment detail.</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                <p>Good Morning
+                    <strong>
+                        <t t-out="object.env.user.name"/>
+                    </strong>
+                    ,
+                </p>
+                <p>
+                    Please find the details of the appointments for the next day:
+                </p>
+                <table style="border: 1px solid #ddd; border-collapse: collapse; width: 100%; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2; text-align: left;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Appointment number</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Patient name</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Date of appointment</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Appointment reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="object.get_next_day_appointment_data()" t-as="appointment">
+                            <tr>
+                                <t t-out="appointment_index+1"/>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="appointment.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="appointment.patient_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="appointment.appointment_date"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="appointment.appointment_reason"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p>
+                    Please feel free to contact us if you have any questions about these appointments.
+                </p>
+                <p>Best Regards,</p>
+                <p>
+                    <strong>
+                        <t t-out="object.env.user.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

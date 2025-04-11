@@ -1,8 +1,4 @@
 from datetime import datetime, date
-
-from PIL.ImageChops import difference
-from dateutil.relativedelta import relativedelta
-
 from odoo import models,fields,api
 
 class DatePracticeWizard(models.TransientModel):

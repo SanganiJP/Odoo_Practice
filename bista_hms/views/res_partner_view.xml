@@ -9,6 +9,12 @@
             <xpath expr="//page[2]/group[1]//field[@name='user_id']" position="before">
                 <field name="extra_discount"/>
             </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="terms_and_conditions"/>
+            </xpath>
+            <xpath expr="//field[@name='terms_and_conditions']" position="after">
+                <field name="use_customers_tc"/>
+            </xpath>
         </field>
     </record>
 </odoo>

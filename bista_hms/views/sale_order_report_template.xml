@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="sale_order_template" name="SO Report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <hr style="color: black;"/>
+                <t t-foreach="docs" t-as="obj">
+                    <strong>
+                        <h1 align="right" class="text-right">Sale Order</h1>
+                    </strong>
+                    <div>
+                        <div>
+                            <table class="table" align="right" style="border: 1px solid #D3D3D3; width:50%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center; background-color:black; color:white;">Date</th>
+                                        <th style="text-align:center; background-color:black; color:white;">Order#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td align="center">
+                                            <span t-field="obj.date_order"/>
+                                        </td>
+                                        <td align="center">
+                                            <span t-field="obj.name"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <table class="table" style="border: 1px solid #D3D3D3;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center; background-color:black; color:white;">Bill to</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span t-field="obj.partner_id.contact_address"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table" style="border: 1px solid #D3D3D3;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center; background-color:black; color:white;">Ship to</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span t-field="obj.partner_id.contact_address"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <table class="table" align="right" style="border: 1px solid #D3D3D3; width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center; background-color:black; color:white;">Customer PO</th>
+                                        <th style="text-align:center; background-color:black; color:white;">Ship Via </th>
+                                        <th style="text-align:center; background-color:black; color:white;">Inco Terms </th>
+                                        <th style="text-align:center; background-color:black; color:white;">Acct #: </th>
+                                        <th style="text-align:center; background-color:black; color:white;">Estimated Ship Date: </th>
+                                        <th style="text-align:center; background-color:black; color:white;">Salesperson </th>
+                                        <th style="text-align:center; background-color:black; color:white;">Payment Terms </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td><span t-field="obj.user_id"/></td>
+                                        <td> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <table class="table" align="right" style="border: 1px solid #D3D3D3; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center; background-color:black; color:white;">#</th>
+                                            <th style="text-align:center; background-color:black; color:white;">Description </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Model </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Quantity </th>
+                                            <th style="text-align:center; background-color:black; color:white;">UOM </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Unit Price </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Discount(%) </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Taxes </th>
+                                            <th style="text-align:center; background-color:black; color:white;">Total </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="obj.order_line" t-as="line">
+                                            <td><span t-esc="line_index + 1"/></td>
+                                            <td><span t-field="line.product_id.name"/></td>
+                                            <td> </td>
+                                            <td><span t-field="line.product_uom_qty"/></td>
+                                            <td><span t-field="line.product_uom"/></td>
+                                            <td><span t-field="line.price_unit"/></td>
+                                            <td><span t-field="line.discount"/></td>
+                                            <td><span t-field="line.tax_id"/></td>
+                                            <td><span t-field="line.price_subtotal"/></td>
+                                        </tr>
+                                    </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <table align="right">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>Sub-total:</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="obj.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>Tax</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="obj.amount_tax"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>Discount</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="obj.discount_amount"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>Shipping-Handling</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="obj.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div align="right" style="margin-top:15px;">
+                            <table class="table" style="width:40%">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="obj.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+

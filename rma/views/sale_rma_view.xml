@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="sale_rma_from_view" model="ir.ui.view">
+        <field name="name">sale.rma.form.view</field>
+        <field name="model">sale.rma</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sale_rma_return_wizard" class="btn-primary" type="object" string="Return"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="team_id" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sale_team_name"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="RMA Lines">
+                                <field name="rma_line_ids" readonly="1" force_save="1">
+                                    <list>
+                                        <field name="product_id"/>
+                                        <field name="sale_order_qty"/>
+                                        <field name="unit_price"/>
+                                        <field name="to_receive"/>
+                                        <field name="received_qty"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_rma_list_view" model="ir.ui.view">
+        <field name="name">sale.rma.list.view</field>
+        <field name="model">sale.rma</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="team_id"/>
+                <field name="sale_team_name"/>
+                <field name="date"/>
+                <field name="sale_order_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sale_rma_form" model="ir.actions.act_window">
+        <field name="name">Sale RMA</field>
+        <field name="res_model">sale.rma</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="sale_rma_main_menu_id" name="RMA"/>
+    <menuitem id="sale_rma_form_menu_id" name="Sale RMA" parent="rma.sale_rma_main_menu_id"
+              action="rma.action_sale_rma_form"/>
+</odoo>

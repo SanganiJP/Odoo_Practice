@@ -137,6 +137,8 @@ class HmsPrescription(models.Model):
     def prepare_delivery_line_vals(self, delivery_id):
         move_val = []
         for line in self.prescription_lines:
+            # if line.move_ids:
+            #     continue
             total_qty = sum(line.move_ids.mapped('product_uom_qty'))
             remainning_qty = line.quantity - total_qty
 
@@ -173,5 +175,35 @@ class HmsPrescription(models.Model):
 
     @api.depends("delivery_ids.prescription_id")
     def _compute_count_delivery(self):
+        """
+        This method show count of delivery on smart button.
+        """
         for record in self:
             self.delivery_count = self.env['stock.picking'].search_count([('prescription_id','=',record.id)])
+
+    @api.model
+    def default_get(self, fields_list):
+        """
+        This method set default value in HmsPrescription form
+        """
+        defaults = super(HmsPrescription, self).default_get(fields_list)
+        defaults['lead_reference'] = 'Google'
+
+        patient = self.env["res.patient"].search([('name','=',"Darshan")])
+        defaults['patient_id'] = patient.id
+
+        return defaults
+    #
+    # def get_total_amount(self):
+    #     related_record = self.env["hms.prescription"].search([('prescription_id','=',self.id)])
+    #     return sum(related_record.mapped('prescription_lines.total_amount'))
+    #
+    # a = self.get_total_amount(self=self)
+    # print(a)
+
+    # def get_total_amount(self):
+    #     related_record = self.env["hms.prescription"].search([('prescription_id', '=', self.id)])
+    #     return sum(related_record.mapped('prescription_lines.total_amount'))
+
+
+

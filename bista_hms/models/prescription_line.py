@@ -20,14 +20,9 @@ class PrescriptionLine(models.Model):
     @api.constrains('quantity')
     def check_quantity(self):
         for record in self:
-            total_qty = sum(self.move_ids.mapped('product_uom_qty'))
+            total_qty = sum(record.move_ids.mapped('product_uom_qty'))
             if record.quantity < total_qty:
                 raise UserError("You can't change delivered quantity!")
-        # record.delivered_qty = record.quantity
-        # total_qty = sum(line.move_ids.mapped('product_uom_qty'))
-        # remainning_qty = line.quantity - total_qty
-
-
 
     @api.onchange('product_id')
     def action_find_unit_price(self):
@@ -39,16 +34,7 @@ class PrescriptionLine(models.Model):
         for record in self:
             record.total_amount = record.price_unit * record.quantity
 
-    @api.depends('move_ids.delivery_line_id')
+    @api.depends('move_ids.state')
     def _compute_delivered_qty(self):
         for record in self:
-            record.delivered_qty = record.quantity
-
-
-        # ready_state_delivery = self.env["stock.picking"].search([('state','=','ready'),('prescription_id','=',self.prescription_line_id.id)])
-        # print(delivery_ready)
-        # self.delivered_qty = 10
-        # pass
-        # for record in self:
-        #     if record.product_id is rec.picking_id.product_id:
-        #         record.delivered_qty = rec.picking_id.product_uom_qty
+            record.delivered_qty =  sum(record.move_ids.mapped(lambda x : x.quantity if x.state == 'done' else 0))

@@ -62,5 +62,15 @@
             <field name="active">True</field>
         </record>
 
+        <record id="send_appointment_schedule_mail_to_admin" model="ir.cron">
+            <field name="name">Send appointment schedule mail to admin</field>
+            <field name="model_id" ref="model_hms_appointment"/>
+            <field name="state">code</field>
+            <field name="code">model._action_send_appointment_schedule_mail_to_admin()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
     </data>
 </odoo>
