@@ -140,7 +140,10 @@
                                             <strong>Discount</strong>
                                         </td>
                                         <td class="text-right">
-                                            <span t-field="obj.discount_amount"/>
+                                            <span t-field="obj.currency_id.symbol" />
+                                            <t t-out="obj.calculate_discount_amount()"/>
+<!--                                            <span t-field="00"/>-->
+<!--                                            <span t-field="obj.calculate_discount_amount()"/>-->
                                         </td>
                                     </tr>
                                     <tr>
@@ -154,7 +157,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div align="right" style="margin-top:15px;">
+                        <div style="margin-top:15px;">
                             <table class="table" style="width:40%">
                                 <tbody>
                                     <tr>

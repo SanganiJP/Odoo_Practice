@@ -26,4 +26,9 @@ class SaleOrder(models.Model):
         for rec in self:
             rec.total_amount_in_word = num2words(rec.amount_total, lang='en', to="currency", currency="INR" ).title()
 
-
+    def calculate_discount_amount(self):
+        # order_line = self.env['sale.order.line'].search([('order_id','=',self.id)])
+        discount = 0
+        for line in self.order_line:
+            discount += (((line.product_uom_qty * line.price_unit) * line.discount) / 100)
+        return discount

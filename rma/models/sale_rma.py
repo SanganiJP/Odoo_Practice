@@ -6,17 +6,17 @@ class SaleRma(models.Model):
     _rec_name = 'team_id'
 
     team_id = fields.Char(copy=False, readonly=True, index=True, default="New", string="Team code")
-    sale_team_name = fields.Many2one("team.rma",string="Team Name")
+    sale_team_id = fields.Many2one("team.rma",string="Team Name")
     date = fields.Date(string="Date")
     sale_order_id = fields.Many2one("sale.order", string="Sale order")
     rma_line_ids = fields.One2many("sale.rma.line","rma_id",string="RMA lines")
-
+    delivery_ids = fields.One2many("stock.picking", "picking_id", string="Deliveries")
 
     @api.model_create_multi
     def create(self, vals):
         for rec in vals:
-            if rec['sale_team_name']:
-                team = self.env['team.rma'].browse(rec['sale_team_name'])
+            if rec['sale_team_id']:
+                team = self.env['team.rma'].browse(rec['sale_team_id'])
                 prefix = team.team_prefix
                 seq_name = f'Sale RMA {team.team_name}'
                 seq_code = f'sale.rma.{team.id}'
@@ -35,7 +35,7 @@ class SaleRma(models.Model):
     def get_rma_line(self):
         if self.sale_order_id:
             rma_lines = []
-            rma_lines = [(5,0,0)]
+            rma_lines = [(5, 0, 0)]
             for line in self.sale_order_id.order_line:
                 rma_lines.append((0, 0, {
                     'product_id': line.product_id.id,
@@ -55,15 +55,18 @@ class SaleRma(models.Model):
             'target': 'new',
         }
 
-    # def action_update_on_hand_quantity(self):
-    #     view_id = self.env.ref('bista_hms.on_hand_qty_update_wizard_form').id
-    #
-    #     return {
-    #         'name': 'Update on hand quantity',
-    #         'view_mode': 'form',
-    #         'res_model': 'qty.update.wizard',
-    #         'view_id': view_id,
-    #         'type': 'ir.actions.act_window',
-    #         'target': 'new',
-    #     }
+    def action_view_return_receipt(self):
+        form_view_id = self.env.ref('stock.view_picking_form').id
+        list_view_id = self.env.ref('stock.vpicktree').id
+
+        res = {
+            'name': 'Receipts',
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'stock.picking',
+            'views': [(list_view_id, 'list'), (form_view_id, 'form')],
+            'target': 'current',
+            'domain': [('picking_id', '=', self.id)],
+        }
+        return res
 

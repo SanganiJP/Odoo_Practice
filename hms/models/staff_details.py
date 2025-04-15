@@ -8,4 +8,3 @@ class StaffDetails(models.Model):
     designation = fields.Char('Designation', required = True)
     contact_no = fields.Char('Phone number', required = True)
     department_id = fields.Many2one('departments', 'Department')
-

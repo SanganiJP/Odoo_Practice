@@ -7,3 +7,5 @@ class TeamRma(models.Model):
 
     team_name = fields.Char(string="Team Name")
     team_prefix = fields.Char(string="Prefix")
+
+

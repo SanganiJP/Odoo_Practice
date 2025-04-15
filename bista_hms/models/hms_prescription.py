@@ -41,7 +41,6 @@ class HmsPrescription(models.Model):
         start_of_week = date.today() - timedelta(days=7)
         end_of_week = date.today()
         diff = end_of_week - start_of_week
-        print(diff.days)
 
         prescriptions = self.env["hms.prescription"].search([
             ('prescription_date', '>', start_of_week),
@@ -106,7 +105,7 @@ class HmsPrescription(models.Model):
 
 
     def action_create_prescription_delivery(self):
-        self.state = 'ready'
+        # self.state = 'ready'
         delivery_vals = self.prepare_delivery_vals()
         delivery_id = self.env['stock.picking'].create(delivery_vals)
 
@@ -170,7 +169,6 @@ class HmsPrescription(models.Model):
             'target': 'current',
             'domain': [('prescription_id','=',self.id)],
         }
-
         return res
 
     @api.depends("delivery_ids.prescription_id")

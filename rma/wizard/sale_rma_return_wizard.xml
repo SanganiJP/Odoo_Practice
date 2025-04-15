@@ -8,14 +8,21 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="record_id" readonly="1"/>
-                        <field name="wizard_rma_lines_ids">
-                            <list editable="bottom">
-                                <field name="product_id" readonly="1" force_save="1"/>
-                                <field name="so_qty" readonly="1" force_save="1"/>
-                                <field name="qty" />
-                            </list>
-                        </field>
+                        <field name="ticket_id" readonly="1"/>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="RMA Lines">
+                                <field name="wizard_rma_lines_ids">
+                                    <list editable="bottom">
+                                        <field name="product_id" readonly="1" force_save="1"/>
+                                        <field name="so_qty" readonly="1" force_save="1"/>
+                                        <field name="qty" />
+                                        <field name="rma_lines_id" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                     </group>
                     <footer>
                         <button name="process_return" string="Process" type="object" class="btn-primary"/>
