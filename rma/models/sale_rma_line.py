@@ -22,5 +22,5 @@ class SaleRmaLines(models.Model):
     @api.depends('move_ids.state')
     def _compute_received_qty(self):
         for rec in self:
-            record = self.env['stock.move'].search([('move_line_id', '=', rec.id),('state','=','done')])
+            record = self.env['stock.move'].search([('move_line_id', '=', rec.id)])
             rec.received_qty = record.quantity

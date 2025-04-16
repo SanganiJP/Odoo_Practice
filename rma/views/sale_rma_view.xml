@@ -10,10 +10,10 @@
                     <button name="action_sale_rma_return_wizard" class="btn-primary" type="object" string="Return"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
+                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_return_receipt" type="object"
                                 class="oe_stat_button" icon="fa-truck" string="Delivery">
-<!--                            <field name="delivery_count" widget="statinfo"/>-->
+                            <field name="delivery_count" widget="statinfo" string="Delivery"/>
                         </button>
                     </div>
                     <div class="oe_title">

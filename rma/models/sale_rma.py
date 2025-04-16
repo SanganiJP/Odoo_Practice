@@ -11,6 +11,7 @@ class SaleRma(models.Model):
     sale_order_id = fields.Many2one("sale.order", string="Sale order")
     rma_line_ids = fields.One2many("sale.rma.line","rma_id",string="RMA lines")
     delivery_ids = fields.One2many("stock.picking", "picking_id", string="Deliveries")
+    delivery_count = fields.Integer(default=0, compute='_compute_delivery_count')
 
     @api.model_create_multi
     def create(self, vals):
@@ -69,4 +70,10 @@ class SaleRma(models.Model):
             'domain': [('picking_id', '=', self.id)],
         }
         return res
+
+    @api.depends('delivery_ids.picking_id')
+    def _compute_delivery_count(self):
+        for rec in self:
+            self.delivery_count = self.env['stock.picking'].search_count([('picking_id','=',rec.id)])
+
 

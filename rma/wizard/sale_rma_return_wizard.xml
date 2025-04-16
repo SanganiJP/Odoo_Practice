@@ -18,7 +18,7 @@
                                         <field name="product_id" readonly="1" force_save="1"/>
                                         <field name="so_qty" readonly="1" force_save="1"/>
                                         <field name="qty" />
-                                        <field name="rma_lines_id" />
+                                        <field name="rma_lines_id" column_invisible="1"/>
                                     </list>
                                 </field>
                             </page>
