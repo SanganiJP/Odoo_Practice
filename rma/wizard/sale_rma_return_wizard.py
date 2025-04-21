@@ -7,8 +7,7 @@ class RmaLineWizard(models.TransientModel):
     _description = "qty update wizard"
 
     ticket_id = fields.Many2one("sale.rma",string="Record ID")
-    wizard_rma_lines_ids = fields.One2many("wizard.rma.lines","wizard_rma_line_id", string=" ")
-
+    wizard_rma_lines_ids = fields.One2many("wizard.rma.lines","wizard_rma_line_id")
 
     def process_return(self):
         delivery_vals = self.prepare_delivery_vals()
@@ -21,7 +20,7 @@ class RmaLineWizard(models.TransientModel):
             delivery_id.unlink()
             raise UserError('Please add product to deliver!')
 
-        delivery_id.action_confirm()
+        # delivery_id.action_confirm()
 
     def prepare_delivery_vals(self):
         picking_type_id = self.env['stock.picking.type'].search([('code', '=', 'incoming')], limit=1)
@@ -63,7 +62,9 @@ class RmaLineWizard(models.TransientModel):
                 rma_lines.append((0, 0, {
                     'product_id': line.product_id.id,
                     'so_qty': line.sale_order_qty,
-                    'qty': line.sale_order_qty,
+                    'available_qty': line.available_qty,
+                    'qty': line.available_qty,
                     'rma_lines_id': line.id,
                 }))
             self.wizard_rma_lines_ids = rma_lines
+

@@ -1,6 +1,10 @@
+from datetime import date, timedelta
+
 from wheel.metadata import _
 
 from odoo import fields,models,api
+from odoo.fields import Date
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -47,3 +51,18 @@ class SaleOrder(models.Model):
                     order.button_approve()
                 else:
                     order.write({'state': 'to_approve'})
+
+    def get_expiring_quotations(self):
+        today = date.today()
+        days = self.company_id.quote_notification_before_expiry
+        last_date = today + timedelta(days=days)
+        quotations = self.env["sale.order"].search([
+            ('validity_date', '>', today),
+            ('validity_date','<=',last_date)
+        ])
+        return quotations
+
+    def action_send_expiring_quotations_mail_to_sale_administrator(self):
+        template_id = self.env.ref('sale_approval.email_template_for_expiring_quotations_mail')
+        template_id.send_mail(self.id, force_send=True)
+

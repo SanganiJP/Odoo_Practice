@@ -11,9 +11,10 @@ class WizardRmaLines(models.TransientModel):
     so_qty = fields.Integer(string="SO Qty")
     qty = fields.Integer(string="Return Qty")
     rma_lines_id = fields.Many2one("sale.rma.line", string="RMA Line ID")
+    available_qty = fields.Integer(string="Available Qty", store=True)
 
 
     @api.onchange('qty')
     def check_return_qty(self):
-        if self.so_qty < self.qty:
+        if self.available_qty < self.qty:
             raise UserError("You can't return more quantity then ordered quantity!")

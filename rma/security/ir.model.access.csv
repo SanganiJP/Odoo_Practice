@@ -1,6 +1,8 @@
-id,name,model_id:id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_sale_rma,access.sale.rma,model_sale_rma,,1,1,1,1
 access_team_rma,access.team.rma,model_team_rma,,1,1,1,1
 access_sale_rma_line,access.sale.rma.line,model_sale_rma_line,,1,1,1,1
 access_rma_wizard,access.rma.wizard,model_rma_wizard,,1,1,1,1
 access_wizard_rma_lines,access.wizard.rma.lines,model_wizard_rma_lines,,1,1,1,1
+access_sale_rma_invoice_wizard,access.sale.rma.invoice.wizard,model_sale_rma_invoice_wizard,,1,1,1,1
+access_rma_invoice_lines,access.rma.invoice.lines,model_rma_invoice_lines,,1,1,1,1

@@ -8,6 +8,7 @@
             <form>
                 <header>
                     <button name="action_sale_rma_return_wizard" class="btn-primary" type="object" string="Return"/>
+                    <button name="action_sale_rma_invoice_wizard" class="btn-primary" type="object" string="Invoice"/>
                 </header>
                 <sheet>
                      <div class="oe_button_box" name="button_box">
@@ -38,8 +39,10 @@
                                         <field name="product_id"/>
                                         <field name="sale_order_qty"/>
                                         <field name="unit_price"/>
+                                        <field name="available_qty"/>
                                         <field name="to_receive"/>
                                         <field name="received_qty"/>
+                                        <field name="invoiced_qty"/>
                                     </list>
                                 </field>
                             </page>

@@ -2,13 +2,13 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'SOA',
+    'name': 'Bista DMS',
 
-    'summary': 'This model will help management',
+    'summary': 'This model will help in management',
 
     'description':
         """
-        This is our Hospital management system model. 
+        This is our management system model. 
         """,
 
     'version': '1.0',
@@ -18,10 +18,10 @@
     'depends': ['base','product','sale','stock'],
 
     'data': [
-        'data/ir_cron.xml',
-        'data/mail_template_data.xml',
-        'views/res_config_settings_views.xml',
+        'security/ir.model.access.csv',
+        'views/res_partner_view.xml',
+        'views/product_template_view.xml',
         'views/sale_order_view.xml',
+        'views/documents_custom_view.xml',
     ],
 }
-

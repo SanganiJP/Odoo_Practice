@@ -10,3 +10,5 @@ class Company(models.Model):
 
     so_double_validation_amount = fields.Monetary(string='Double validation amount', default=5000,
         help="Minimum amount for which a double validation is required")
+
+    quote_notification_before_expiry = fields.Integer(string="Default Quotation Validity", default=30)

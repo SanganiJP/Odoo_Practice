@@ -13,6 +13,7 @@ class SaleRma(models.Model):
     delivery_ids = fields.One2many("stock.picking", "picking_id", string="Deliveries")
     delivery_count = fields.Integer(default=0, compute='_compute_delivery_count')
 
+
     @api.model_create_multi
     def create(self, vals):
         for rec in vals:
@@ -56,6 +57,17 @@ class SaleRma(models.Model):
             'target': 'new',
         }
 
+    def action_sale_rma_invoice_wizard(self):
+        view_id = self.env.ref('rma.sale_rma_invoice_wizard_form').id
+        return {
+            'name': 'Invoice Process',
+            'view_mode': 'form',
+            'res_model': 'sale.rma.invoice.wizard',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
+
     def action_view_return_receipt(self):
         form_view_id = self.env.ref('stock.view_picking_form').id
         list_view_id = self.env.ref('stock.vpicktree').id
@@ -75,5 +87,4 @@ class SaleRma(models.Model):
     def _compute_delivery_count(self):
         for rec in self:
             self.delivery_count = self.env['stock.picking'].search_count([('picking_id','=',rec.id)])
-
 

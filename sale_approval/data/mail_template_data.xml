@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<odoo noupdate="1">
+    <record id="email_template_for_expiring_quotations_mail" model="mail.template">
+        <field name="name">Expiring Quotations</field>
+        <field name="model_id" ref="sale_approval.model_sale_order"/>
+        <field name="email_from">{{object.env.user.company_id.email}}</field>
+        <field name="email_to">{{object.env.user.company_id.email}}</field>
+        <field name="subject">Expiring Quotations</field>
+        <field name="description">Sent to patient for appointment detail.</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                <p>Good Morning,</p>
+                <p>
+                    Please find the details of the Expiring Quotations:
+                </p>
+                <table style="border: 1px solid #ddd; border-collapse: collapse; width: 100%; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2; text-align: left;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Quotation Number</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Customer Name</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Total Amount</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Quotation Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="object.get_expiring_quotations()" t-as="quotation">
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="quotation.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="quotation.partner_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="quotation.amount_total"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="quotation.validity_date"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p>
+                    Please feel free to contact us if you have any questions.
+                </p>
+                <p>Best Regards,</p>
+                <p>Jayesh Sangani</p>
+
+<!--                <p>-->
+<!--                    <strong>-->
+<!--                        <t t-out="object.env.user.company_id.name"/>-->
+<!--                    </strong>-->
+<!--                </p>-->
+            </div>
+        </field>
+    </record>
+</odoo>
