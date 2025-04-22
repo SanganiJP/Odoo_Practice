@@ -10,8 +10,12 @@
                 <field name="customer_tag_ids" widget="many2many_tags"/>
             </xpath>
              <xpath expr="//field[@name='customer_tag_ids']" position="after">
-                <field name="document_ids" widget="many2many_tags"/>
+                <field name="document_tag_ids" widget="many2many_tags"/>
             </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="after" >
+                 <button name="get_document_tags" string="Get Documents" type="object" class="btn-primary"/>
+            </xpath>
+
         </field>
     </record>
 </odoo>

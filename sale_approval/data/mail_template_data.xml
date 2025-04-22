@@ -47,12 +47,6 @@
                 </p>
                 <p>Best Regards,</p>
                 <p>Jayesh Sangani</p>
-
-<!--                <p>-->
-<!--                    <strong>-->
-<!--                        <t t-out="object.env.user.company_id.name"/>-->
-<!--                    </strong>-->
-<!--                </p>-->
             </div>
         </field>
     </record>

@@ -12,7 +12,8 @@ class SaleRma(models.Model):
     rma_line_ids = fields.One2many("sale.rma.line","rma_id",string="RMA lines")
     delivery_ids = fields.One2many("stock.picking", "picking_id", string="Deliveries")
     delivery_count = fields.Integer(default=0, compute='_compute_delivery_count')
-
+    invoice_ids = fields.One2many("account.move","rma_invoice_id", string="Invoices")
+    
 
     @api.model_create_multi
     def create(self, vals):

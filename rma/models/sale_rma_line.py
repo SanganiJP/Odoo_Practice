@@ -13,6 +13,8 @@ class SaleRmaLines(models.Model):
     rma_id = fields.Many2one("sale.rma",string="Order ID")
     move_ids = fields.One2many("stock.move", "move_line_id", string="Delivery line")
     invoiced_qty = fields.Integer(string="Invoiced Qty", compute="_compute_invoiced_qty", store=True)
+    invoice_line_ids = fields.One2many("account.move.line","account_move_line_id",string="invoice line")
+    available_qty_to_invoice = fields.Integer(string="Available Qty To Invoice", compute="_compute_available_qty_to_invoice", store=True)
 
     @api.depends('move_ids.state','move_ids.product_uom_qty')
     def _compute_to_receive_qty(self):
@@ -29,8 +31,12 @@ class SaleRmaLines(models.Model):
         for rec in self:
             rec.available_qty = rec.sale_order_qty - rec.received_qty
 
-    @api.depends()
+    @api.depends('invoice_line_ids.parent_state')
     def _compute_invoiced_qty(self):
-        pass
-        # for rec in self:
-        #     rec.invoiced_qty = 1
+        for rec in self:
+            rec.invoiced_qty = sum(rec.invoice_line_ids.filtered(lambda line : line.parent_state not in ['cancel']).mapped('quantity'))
+
+    @api.depends('received_qty','invoiced_qty')
+    def _compute_available_qty_to_invoice(self):
+        for rec in self:
+            rec.available_qty_to_invoice = rec.received_qty - rec.invoiced_qty
