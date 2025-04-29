@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<odoo noupdate="1">
+    <record id="product_1" model="product.template">
+        <field name="name">P1</field>
+        <field name="list_price">100</field>
+    </record>
+
+    <record id="product_2" model="product.template">
+        <field name="name">P2</field>
+        <field name="list_price">200</field>
+    </record>
+</odoo>

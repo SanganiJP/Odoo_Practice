@@ -7,6 +7,11 @@ class ResHospital(models.Model):
     name = fields.Char(string="Name",required=True)
     hospital_ids = fields.One2many("res.doctor","hospital_id",string="Hospital Data")
 
+    # record = self.env['model.name'].search([('field_name', '=', value)])
+    # for rec in record:
+        # do something with rec
+
+
     # from datetime import datetime
     # from dateutil.relativedelta import relativedelta
     #
@@ -147,6 +152,92 @@ class ResHospital(models.Model):
     #         draft_orders = self.search([('state', '=', 'draft')])  # ORM search method
     #         draft_orders.write({'state': 'sale'})  # ORM write method
     #         return True
+
+
+#
+# # 🗓️ Date & Time Formula Chart for Odoo (Python)
+#
+# ---
+#
+# ### 📌 1. Import Required Libraries
+# ```python
+# from datetime import datetime, date, timedelta
+# from odoo import fields
+# ```
+#
+# ---
+#
+# ### 📌 2. Get Current Date and Time
+# | Task               | Code                         |
+# |--------------------|-------------------------------|
+# | Today's Date        | `date.today()` or `fields.Date.today()` |
+# | Current DateTime    | `datetime.now()` or `fields.Datetime.now()` |
+#
+# ---
+#
+# ### 📌 3. String and Date Conversion
+# | Task               | Code Example                                       |
+# |--------------------|----------------------------------------------------|
+# | String ➔ Date       | `datetime.strptime('2025-04-28', '%Y-%m-%d').date()` |
+# | Date ➔ String       | `date_obj.strftime('%Y-%m-%d')`                   |
+#
+# ---
+#
+# ### 📌 4. Add / Subtract Days
+# | Task                | Code Example                |
+# |---------------------|------------------------------|
+# | Add 5 days          | `today + timedelta(days=5)`   |
+# | Subtract 3 days     | `today - timedelta(days=3)`   |
+#
+# ---
+#
+# ### 📌 5. Compare Two Dates
+# ```python
+# if date1 > date2:
+#     # date1 is after date2
+# ```
+#
+# ---
+#
+# ### 📌 6. Common Format Codes (for `strftime` / `strptime`)
+# | Code  | Meaning          | Example  |
+# |-------|------------------|----------|
+# | `%Y`  | Year (4 digits)   | 2025     |
+# | `%m`  | Month (01–12)     | 04       |
+# | `%d`  | Day (01–31)       | 28       |
+# | `%H`  | Hour (00–23)      | 14       |
+# | `%M`  | Minute (00–59)    | 45       |
+# | `%S`  | Second (00–59)    | 09       |
+#
+# ---
+#
+# # ✅ Quick Mini Examples:
+#
+# - **Today's date**:
+#   ```python
+#   fields.Date.today()
+#   ```
+# - **Now (date + time)**:
+#   ```python
+#   fields.Datetime.now()
+#   ```
+# - **Add 7 days**:
+#   ```python
+#   fields.Date.today() + timedelta(days=7)
+#   ```
+# - **Convert string to date**:
+#   ```python
+#   datetime.strptime('2025-04-28', '%Y-%m-%d').date()
+#   ```
+
+#    Widget	                  When to Use
+# many2many_tags	    When you want a clean tag-style selection.
+# many2many_checkboxes	When options are limited and user should tick multiple easily.
+# many2many_binary	    When uploading multiple files (documents/images).
+# many2many_list	    Default table-style view (full record details).
+# many2many_button	    When you want a quick toggle UI.
+# many2many_kanban	    When records have images/status and need a rich UI.
+
 
 
 

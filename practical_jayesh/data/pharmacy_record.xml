@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<odoo noupdate="1">
+
+    <record id="product_1" model="pharmacy">
+        <field name="name">Pharmalabs</field>
+    </record>
+    <record id="product_2" model="pharmacy">
+        <field name="name">Wells</field>
+    </record>
+    <record id="product_3" model="pharmacy">
+        <field name="name">N/A</field>
+    </record>
+</odoo>

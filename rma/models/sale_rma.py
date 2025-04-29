@@ -69,6 +69,17 @@ class SaleRma(models.Model):
             'target': 'new',
         }
 
+    def action_sale_rma_add_product_wizard(self):
+        view_id = self.env.ref('rma.sale_rma_add_product_wizard_form').id
+        return {
+            'name': 'Add Product',
+            'view_mode': 'form',
+            'res_model': 'sale.rma.add.product.wizard',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
+
     def action_view_return_receipt(self):
         form_view_id = self.env.ref('stock.view_picking_form').id
         list_view_id = self.env.ref('stock.vpicktree').id

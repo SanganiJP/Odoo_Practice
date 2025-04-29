@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <record id="new_activity" model="mail.activity.type">-->
+<!--        <field name="name">Client Meeting</field>-->
+<!--    </record>-->
+
+    <record id="mail_form_inherit" model="ir.ui.view">
+        <field name="name">ProjectName.mail.form</field>
+        <field name="model">mail.activity.schedule</field>
+        <field name="inherit_id" ref="mail.mail_activity_schedule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='activity_type_id']" position="after">
+                <field name="meaningful_connection"/>
+            </xpath>
+            <xpath expr="//field[@name='activity_type_id']" position="attributes">
+                <attribute name="string">Connection</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_user_id']" position="attributes">
+                <attribute name="domain">[("share", "=", False)]</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_schedule_activities']" position="after">
+                <p>Or</p>
+            </xpath>
+            <xpath expr="//button[@name='action_schedule_activities_done']" position="after">
+                <p>Or</p>
+            </xpath>
+             <xpath expr="//button[@name='action_schedule_activities_done_and_schedule']" position="after">
+                <p>Or</p>
+            </xpath>
+        </field>
+    </record>
+</odoo>

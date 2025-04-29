@@ -24,6 +24,7 @@
         'data/appointment_ir_sequence.xml',
         'data/ir_cron.xml',
         'data/mail_tmplate_data.xml',
+        'data/product_record.xml',
         'views/res_patient_view.xml',
         'views/hms_appointment_view.xml',
         'views/res_doctor_view.xml',

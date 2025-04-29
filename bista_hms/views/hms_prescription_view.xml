@@ -33,7 +33,7 @@
                     </div>
                     <group string="Prescription Details">
                         <group>
-                            <field name="patient_id"/>
+                            <field name="patient_id" options="{'no_create': True, 'no_create_edit':True}"/>
                             <field name="prescription_date"/>
                             <field name="lead_reference"/>
                         </group>
@@ -42,7 +42,7 @@
                         <page string="Prescription">
                             <field name="prescription_lines">
                                 <list>
-                                    <field name="product_id"/>
+                                    <field name="product_id" options="{'no_create': True, 'no_create_edit':True}"/>
                                     <field name="price_unit"/>
                                     <field name="quantity" />
                                     <field name="delivered_qty"/>

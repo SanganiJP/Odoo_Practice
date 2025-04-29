@@ -18,7 +18,10 @@
     'depends': ['base', 'sale', 'crm'],
 
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/crm_lead_view.xml',
+        'views/probability_stages_view.xml',
+        'views/student_activity_view.xml',
     ],
 }

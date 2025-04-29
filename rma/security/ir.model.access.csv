@@ -6,3 +6,4 @@ access_rma_wizard,access.rma.wizard,model_rma_wizard,,1,1,1,1
 access_wizard_rma_lines,access.wizard.rma.lines,model_wizard_rma_lines,,1,1,1,1
 access_sale_rma_invoice_wizard,access.sale.rma.invoice.wizard,model_sale_rma_invoice_wizard,,1,1,1,1
 access_rma_invoice_lines,access.rma.invoice.lines,model_rma_invoice_lines,,1,1,1,1
+access_sale_rma_add_product_wizard,access.sale.rma.add.product.wizard,model_sale_rma_add_product_wizard,,1,1,1,1

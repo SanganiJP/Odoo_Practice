@@ -1,1 +1,7 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+
+access_probability_stages_user,access.probability.stages.user,model_probability_stages,bista_crm.group_probability_stage_user,1,0,0,0
+access_probability_stages_admin,access.probability.stages.admin,model_probability_stages,bista_crm.group_probability_stage_admin,1,1,1,0
+
+access_student_activity_admin,access.student.activity.admin,model_student_activity,bista_crm.group_student_activity_admin,1,1,1,1
+access_student_activity_user,access.student.activity.user,model_student_activity,bista_crm.group_student_activity_user,1,1,1,1

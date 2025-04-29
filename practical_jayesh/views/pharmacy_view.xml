@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="pharmacy_form_view" model="ir.ui.view">
+            <field name="name">pharmacy.form</field>
+            <field name="model">pharmacy</field>
+            <field name="arch" type="xml">
+                <form string="pharmacy">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pharmacy_list_view" model="ir.ui.view">
+            <field name="name">pharmacy.list</field>
+            <field name="model">pharmacy</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="pharmacy_act_window" model="ir.actions.act_window">
+            <field name="name">pharmacy</field>
+            <field name="res_model">pharmacy</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem name="Pharmacy" id="pharmacy_menu" parent="sale.menu_sale_config" action="pharmacy_act_window"/>
+
+    </data>
+</odoo>

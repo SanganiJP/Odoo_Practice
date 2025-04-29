@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!-- Group: Sale Approver User -->
+    <record id="group_sale_approver" model="res.groups">
+        <field name="name">Sale Approver</field>
+    </record>
+
+    <!-- Base Group: pharmacy User -->
+    <record id="group_pharmacy_user" model="res.groups">
+        <field name="name">Pharmacy User</field>
+    </record>
+
+    <!--Admin Group: Inherits pharmacy User rights-->
+    <record id="group_pharmacy_admin" model="res.groups">
+        <field name="name">Pharmacy Admin</field>
+        <field name="implied_ids" eval="[(4, ref('practical_jayesh.group_pharmacy_user'))]"/>
+    </record>
+
+    <record id="pharmacy_restrict_rule" model="ir.rule">
+        <field name="name">Pharmacy Rule</field>
+        <field name="model_id" ref="model_pharmacy"/>
+        <field name="domain_force">[( 1 , '=', 1 )]</field>
+        <field name="groups" eval="[(4, ref('practical_jayesh.group_pharmacy_user'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="pharmacy_create_edit_rule" model="ir.rule">
+        <field name="name">Pharmacy Rule</field>
+        <field name="model_id" ref="model_pharmacy"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('practical_jayesh.group_pharmacy_user'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+</odoo>

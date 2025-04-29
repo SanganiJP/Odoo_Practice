@@ -66,3 +66,4 @@ class SaleOrder(models.Model):
         template_id = self.env.ref('sale_approval.email_template_for_expiring_quotations_mail')
         template_id.send_mail(self.id, force_send=True)
 
+

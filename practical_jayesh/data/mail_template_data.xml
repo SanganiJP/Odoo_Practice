@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<odoo>
+       <record id="purchase_order_confirmation_mail_template" model="mail.template">
+        <field name="name">Purchase Order Confirmation</field>
+        <field name="model_id" ref="practical_jayesh.model_purchase_order"/>
+        <field name="email_from">{{object.env.user.email}}</field>
+        <field name="email_to">{{object.partner_id.email}}</field>
+        <!--        <field name="auto_delete" eval="True"/>-->
+        <field name="subject">New Purchase Order: {{object.name}}</field>
+        <field name="body_html" type="html">
+            <p>Hello,
+                <strong>
+                    <t t-out="object.partner_id.name"/>
+                </strong>
+            </p>
+            <p>Please check the new Purchase order <t t-out="object.name"/>.</p>
+            <p>The Amount total is <t t-out="object.amount_total"/>.</p>
+            <p>Please fulfill this order as soon as possible.</p>
+            <p>Thank you</p>
+            <p>Best regards,</p>
+        </field>
+           <field name="report_template_ids" eval="[(4, ref('purchase.action_report_purchase_order'))]"/>
+    </record>
+
+</odoo>
+

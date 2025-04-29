@@ -22,6 +22,8 @@
         'data/mail_template_data.xml',
         'views/res_config_settings_views.xml',
         'views/sale_order_view.xml',
+        'views/purchase_order_view.xml',
+        'views/chatter_activity_view.xml',
     ],
 }
 

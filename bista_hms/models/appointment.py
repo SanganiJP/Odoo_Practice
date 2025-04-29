@@ -1,3 +1,5 @@
+from wheel.metadata import _
+
 from odoo import models, fields, api
 from datetime import datetime, date, timedelta
 
@@ -18,9 +20,11 @@ GUARDIAN_TYPE = [('parent', 'Parent'),
 class Appointment(models.Model):
     _name = "hms.appointment"
     _description = "Appointment"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Appointment ID", copy=False, readonly=True, index=True, default="New")
-    patient_id = fields.Many2one("res.patient", string="Name", required=True)
+    patient_id = fields.Many2one("res.patient", string="Name", required=True, tracking=True)
+    # tracking = 'True'
     appointment_date = fields.Date(string="Date", required=True, default=date.today())
     appointment_reason = fields.Text(string="Reason")
     state = fields.Selection([('draft', 'Draft'),
@@ -29,7 +33,7 @@ class Appointment(models.Model):
                               ('in_consultation', 'In Consultation'),
                               ('done', 'Done'),
                               ('cancel', 'Cancel')],
-                             string="Status", default='draft')
+                             string="Status", default='draft', tracking=True)
     age_category = fields.Selection(AGE_CATEGORY, string="Patient Category")
     guardian_type = fields.Selection(GUARDIAN_TYPE, string="Guardian")
     guardian_id = fields.Many2one("res.partner", string="Guardian Name")
@@ -71,6 +75,9 @@ class Appointment(models.Model):
 
     def action_confirm(self):
         self.state = 'confirm'
+        self.ensure_one()
+        message = _("appointment confirmed")
+        self.message_post(body=message)
 
     def action_waiting(self):
         self.state = 'waiting'
@@ -145,7 +152,7 @@ class Appointment(models.Model):
                                                'Date of appointment': appointment_date.date()
                                                })
             weekly_cancelled_appointment.append(cancelled_appointment_data)
-        print(weekly_cancelled_appointment)
+        # print(weekly_cancelled_appointment)
 
     def action_date_practice_wizard(self):
         view_id = self.env.ref('bista_hms.date_practice_wizard_form').id

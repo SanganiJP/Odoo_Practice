@@ -32,3 +32,9 @@ class SaleOrder(models.Model):
         for line in self.order_line:
             discount += (((line.product_uom_qty * line.price_unit) * line.discount) / 100)
         return discount
+
+    def action_confirm(self):
+        res = super().action_confirm()
+        template_id = self.env.ref('bista_hms.sale_order_confirmation_mail_template')
+        template_id.send_mail(self.id, force_send=True)
+        return res

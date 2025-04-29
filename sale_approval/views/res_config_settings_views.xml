@@ -19,6 +19,7 @@
                         </div>
                     </div>
                 </setting>
+
                 <setting id="quote_notification_before_expiry">
                     <div>
                         <label for="quote_notification_before_expiry"/>

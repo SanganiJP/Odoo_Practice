@@ -7,24 +7,35 @@
         <field name="arch" type="xml">
             <form string="Appointment">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" invisible="state != 'draft'" class="btn-primary"/>
-                    <button name="action_waiting" string="Waiting" type="object" invisible="state != 'confirm'" class="btn-primary"/>
-                    <button name="action_in_consultation" string="In Consultation" type="object" invisible="state != 'waiting'" class="btn-primary"/>
-                    <button name="action_done" string="Done" type="object" invisible="state != 'in_consultation'" class="btn-primary"/>
-                    <button name="action_date_practice_wizard" string="Date Operation" type="object" class="btn-primary"/>
-                    <button name="action_send_appointment_mail" string="Send Mail" type="object" invisible="state != 'confirm'" class="btn-primary"/>
+                    <button name="action_confirm" string="Confirm" type="object" invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_waiting" string="Waiting" type="object" invisible="state != 'confirm'"
+                            class="btn-primary"/>
+                    <button name="action_in_consultation" string="In Consultation" type="object"
+                            invisible="state != 'waiting'" class="btn-primary"/>
+                    <button name="action_done" string="Done" type="object" invisible="state != 'in_consultation'"
+                            class="btn-primary"/>
+                    <button name="action_date_practice_wizard" string="Date Operation" type="object"
+                            class="btn-primary"/>
+                    <button name="action_send_appointment_mail" string="Send Mail" type="object"
+                            invisible="state != 'confirm'" class="btn-primary"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
 
                 <sheet>
+                    <widget name="web_ribbon" title="Draft" invisible="state != 'draft'"/>
+                    <widget name="web_ribbon" title="Confirm" invisible="state != 'confirm'"/>
+                    <widget name="web_ribbon" title="Done" invisible="state != 'done'"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
+                    <!--                      <widget name="web_ribbon" title="Paid" invisible="payment_state != 'paid' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>-->
+
                     <group string="Appointment Form">
                         <group>
-                            <field name="patient_id"/>
+                            <field name="patient_id" options="{'no_create': True, 'no_create_edit':True}"/>
                             <field name="appointment_date"/>
                             <field name="age_category"/>
                             <field name="appointment_reason"/>
@@ -40,9 +51,35 @@
                         </group>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
+
         </field>
     </record>
+
+    <record id="appointment_search_view" model="ir.ui.view">
+        <field name="name">hms.appointment</field>
+        <field name="model">hms.appointment</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <field name="name"
+                       filter_domain="['|', '|', ('name', 'ilike', self), ('patient_id', 'ilike', self),('appointment_reason', 'ilike', self)]"/>
+                <field name="patient_id"/>
+                <field name="appointment_reason"/>
+                <separator/>
+                <filter string="Draft Appointments" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirm Appointments" name="confirm" domain="[('state', '=', 'confirm')]"/>
+                <filter string="Done Appointments" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Appointment Date" name="appointment_date"
+                            context="{'group_by':'appointment_date'}"/>
+                    <filter string="Status" name="state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
 
     <record id="appointment_list_view" model="ir.ui.view">
         <field name="name">hms.appointment.list.view</field>

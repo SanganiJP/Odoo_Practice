@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="delivery_report_customized" inherit_id="stock.report_delivery_document">
+        <xpath expr="//div[@name='div_sched_date']" position="after">
+            <div class="col col-3 mw-100 mb-2" name="user">
+                <strong>Responsible</strong>
+                <div t-field="o.user_id" class="m-0">User</div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@name='signature']" position="after">
+                <strong>Notes</strong>
+                <div t-field="o.note" class="m-0">Google</div>
+        </xpath>
+<!--        signature-->
+    </template>
+</odoo>

@@ -9,6 +9,7 @@
                 <header>
                     <button name="action_sale_rma_return_wizard" class="btn-primary" type="object" string="Return"/>
                     <button name="action_sale_rma_invoice_wizard" class="btn-primary" type="object" string="Invoice"/>
+                    <button name="action_sale_rma_add_product_wizard" class="btn-primary" type="object" string="Add Product"/>
                 </header>
                 <sheet>
                      <div class="oe_button_box" name="button_box">

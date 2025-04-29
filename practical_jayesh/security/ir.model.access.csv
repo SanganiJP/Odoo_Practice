@@ -1,0 +1,5 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+
+access_add_product_wizard,access.add.product.wizard,model_add_product_wizard,,1,1,1,1
+access_group_pharmacy_user,access.pharmacy_user,model_pharmacy,practical_jayesh.group_pharmacy_user,1,1,1,0
+access_group_pharmacy_admin,access.pharmacy_user,model_pharmacy,practical_jayesh.group_pharmacy_admin,1,1,1,0
