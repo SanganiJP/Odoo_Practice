@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="delivery_report_customized" inherit_id="stock.report_delivery_document">
+        <xpath expr="//div[@name='div_origin']" position="after">
+            <div class="col col-3 mw-100 mb-2" name="source_document">
+                <strong>Source Document</strong>
+                <div t-field="o.origin" class="m-0">S0001</div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

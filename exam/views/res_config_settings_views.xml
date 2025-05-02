@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_sale" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.sale</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='quotation_order_setting_container']" position="inside">
+<!--                <field name="so_order_approval" invisible="1"/>-->
+<!--                <setting id="so_order_approval" company_dependent="1"-->
+<!--                         help="Request managers to approve orders above a minimum amount"-->
+<!--                         groups="sales_team.group_sale_manager">-->
+<!--                    <field name="so_order_approval"/>-->
+<!--                    <div class="content-group" invisible="not so_order_approval">-->
+<!--                        <div class="row mt16">-->
+<!--                            <label for="so_double_validation_amount" class="col-lg-4 o_light_label"/>-->
+<!--                            <field name="so_double_validation_amount"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </setting>-->
+                <field name="sale_order_approval" invisible="1"/>-->
+                <setting id="sale_order_approval" company_dependent="1"
+                         help="Request managers to approve orders above a minimum amounts"
+                         groups="sales_team.group_sale_manager">
+                    <field name="sale_order_approval"/>
+                    <div class="content-group" invisible="not sale_order_approval">
+                        <div class="row mt16">
+                            <label for="sale_double_validation_amount" class="col-lg-4 o_light_label"/>
+                            <field name="sale_double_validation_amount"/>
+                        </div>
+                    </div>
+                </setting>
+
+                <setting id="quote_notification_before_expiry">
+                    <div>
+                        <label for="quote_notification_before_expiry"/>
+                        <field name="quote_notification_before_expiry" class="text-center" style="width: 3rem;"/>
+                        <div class="d-inline-block">days</div>
+<!--                        <span class="fa fa-lg fa-building-o p-2"-->
+<!--                              title="Values set here are company-specific."-->
+<!--                              groups="base.group_multi_company"/>-->
+                    </div>
+<!--                    <div class="text-muted">-->
+<!--                        Default period during which the quote is valid and can still be accepted by the customer. The-->
+<!--                        default can be changed per order or template.-->
+<!--                    </div>-->
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

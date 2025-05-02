@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="report_sale_order_customized" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <center><strong>Documents</strong></center>
+            <t t-foreach="docs" t-as="obj">
+                <table width="100%" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Documents</th>
+                            <th>Products</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="obj.document_line_ids" t-as="line">
+                            <td><span t-field="line.document_id"/></td>
+                            <td><span t-field="line.product_ids"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+<!--                    <t t-foreach="docs" t-as="obj">-->
+<!--                        <strong>Patient Name:</strong><span t-field="obj.patient_id.name"/>-->
+<!--                        <br/>-->
+<!--                        <strong>Patient Age:</strong><span t-esc="obj.patient_id.age or 0"/>-->
+<!--                        <br/>-->
+<!--                        <strong>Date:</strong><span t-field="obj.prescription_date"/>-->
+<!--                        <br/>-->
+<!--                        <br/>-->
+<!--                        <br/>-->
+<!--                           <table width="100%" class="table table-bordered">-->
+<!--                            <thead>-->
+<!--                                <tr>-->
+<!--                                    <th>No.</th>-->
+<!--                                    <th>Product</th>-->
+<!--                                    <th class="text-right">Price</th>-->
+<!--                                    <th class="text-right">Quantity</th>-->
+<!--                                    <th class="text-right">Sub Total</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                                <t t-set="total" t-value="0" />-->
+<!--                                <tr t-foreach="obj.prescription_lines" t-as="line">-->
+<!--                                    <td><span t-esc="line_index + 1"/> </td>-->
+<!--                                    <td><span t-field="line.product_id.display_name"/></td>-->
+<!--                                    <td class="text-right"><span t-field="line.price_unit"/></td>-->
+<!--                                    <td class="text-right"><span t-field="line.quantity"/></td>-->
+<!--                                    <td class="text-right"><span t-field="line.total_amount"/></td>-->
+<!--                                    <t t-set="total" t-value="line.total_amount + total" />-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td> </td>-->
+<!--                                    <td> </td>-->
+<!--                                    <td> </td>-->
+<!--                                    <td class="text-right"><strong>Total:</strong></td>-->
+<!--                                    <td class="text-right"><strong t-esc="total"/></td>-->
+<!--                                </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </t>-->
+        </xpath>
+    </template>
+</odoo>
+
+
+

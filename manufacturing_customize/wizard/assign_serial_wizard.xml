@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="assign_serial_wizard_form" model="ir.ui.view">
+        <field name="name">assign.serial.wizard.form</field>
+        <field name="model">assign.serial.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="number_of_serial_no"/>
+                    </group>
+                    <footer>
+                        <button name="assign_serial" string="Assign" type="object" class="btn-primary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
