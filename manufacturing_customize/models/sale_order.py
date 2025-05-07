@@ -12,6 +12,19 @@ class SaleOrder(models.Model):
     #     return res
     # self.order_line.purchase_line_ids.order_id
 
+    # def assign_serial(self):
+    #     ticket_id = self.env.context.get('active_id')
+    #     if ticket_id:
+    #         record = self.env['mrp.production'].browse(ticket_id)
+    #         for rec in range(self.number_of_serial_no):
+    #             seq = record.product_id.sequence_id.next_by_code('product.product')
+    #             serial_record = {
+    #                 'name': seq,
+    #                 'product_id': record.product_id.id,
+    #             }
+    #             serial_numbers_id = self.env['stock.lot'].create([serial_record])
+    #             record.lot_ids = [(4,serial_numbers_id.id)]
+
     def process_all(self):
         self.action_confirm()
         po = self._get_purchase_orders()
@@ -20,12 +33,34 @@ class SaleOrder(models.Model):
                 po.button_confirm()
                 for po_line in order.order_line:
                     for move in po_line.move_ids:
+                        if move.product_id.sequence_id:
+                            for rec in range(int(move.quantity)):
+                                # seq = order.picking_ids.move_ids.product_id.sequence_id.next_by_code('product.product')
+                                seq = move.product_id.sequence_id.next_by_id()
+                                serial_record = {
+                                    'name': seq,
+                                    'product_id': move.product_id.id,
+                                }
+                                serial_numbers_id = self.env['stock.lot'].create([serial_record])
+                                move.lot_ids = [(4, serial_numbers_id.id)]
                         for so_line in self.order_line:
                             if so_line.product_id.id == move.product_id.id:
                                 move.quantity = so_line.process_qty
                                 break
 
                 order.action_view_picking()
+
+                # if order.picking_ids.move_ids.product_id.sequence_id:
+                #     for rec in range(int(order.picking_ids.move_ids.quantity)):
+                #         # seq = order.picking_ids.move_ids.product_id.sequence_id.next_by_code('product.product')
+                #         seq = order.picking_ids.move_ids.product_id.sequence_id.next_by_id()
+                #         serial_record = {
+                #             'name': seq,
+                #             'product_id': order.picking_ids.move_ids.product_id.id,
+                #         }
+                #         serial_numbers_id = self.env['stock.lot'].create([serial_record])
+                #         order.picking_ids.move_ids.lot_ids = [(4, serial_numbers_id.id)]
+
                 data = order.picking_ids.button_validate()
                 if data != True:
                     context = data.get('context')
@@ -40,7 +75,6 @@ class SaleOrder(models.Model):
                                                                   active_ids=order.invoice_ids.ids).create(
                     {'payment_date': fields.Date.today()}).action_create_payments()
 
-
         for line in self.order_line:
             for move in line.move_ids:
                 move.quantity = line.process_qty
@@ -51,7 +85,7 @@ class SaleOrder(models.Model):
             picking = context.get('button_validate_picking_ids')
             pickings_to_validate = self.env['stock.picking'].browse(picking).with_context(skip_backorder=True)
             pickings_to_validate.button_validate()
-        self.picking_ids.button_validate()
+        # self.picking_ids.button_validate()
         self._create_invoices()
         self.invoice_ids.action_post()
         self.env['account.payment.register'].with_context(active_model='account.move',
