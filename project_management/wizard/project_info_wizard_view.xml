@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="project_info_wizard_wizard" model="ir.ui.view">
+        <field name="name">project.info.wizard.wizard</field>
+        <field name="model">project.info.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Project info wizard">
+                <sheet>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
+

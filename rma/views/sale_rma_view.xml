@@ -9,10 +9,11 @@
                 <header>
                     <button name="action_sale_rma_return_wizard" class="btn-primary" type="object" string="Return"/>
                     <button name="action_sale_rma_invoice_wizard" class="btn-primary" type="object" string="Invoice"/>
-                    <button name="action_sale_rma_add_product_wizard" class="btn-primary" type="object" string="Add Product"/>
+                    <button name="action_sale_rma_add_product_wizard" class="btn-primary" type="object"
+                            string="Add Product"/>
                 </header>
                 <sheet>
-                     <div class="oe_button_box" name="button_box">
+                    <div class="oe_button_box" name="button_box">
                         <button name="action_view_return_receipt" type="object"
                                 class="oe_stat_button" icon="fa-truck" string="Delivery">
                             <field name="delivery_count" widget="statinfo" string="Delivery"/>
@@ -26,18 +27,20 @@
                     <group>
                         <group>
                             <field name="sale_team_id"/>
-                        </group>
-                        <group>
                             <field name="date"/>
-                            <field name="sale_order_id"/>
+                            <field name="partner_id"/>
+                            <field name="product_ids"/>
+                            <field name="sale_order_id" options="{'no_create': True, 'no_create_edit':True}"
+                                   context="{'partner_id': partner_id}"/>
+                            <!--                            <field name="sale_order_id" domain="[('partner_id', '=', partner_id)]" options="{'no_create': True, 'no_create_edit':True}"/>-->
                         </group>
                     </group>
                     <group>
                         <notebook>
                             <page string="RMA Lines">
-                                <field name="rma_line_ids" readonly="1" force_save="1">
-                                    <list>
-                                        <field name="product_id"/>
+                                <field name="rma_line_ids" force_save="1">
+                                    <list editable="bottom">
+                                        <field name="product_id" domain="[('id', 'not in', parent.product_ids.ids)]"/>
                                         <field name="sale_order_qty"/>
                                         <field name="unit_price"/>
                                         <field name="available_qty"/>

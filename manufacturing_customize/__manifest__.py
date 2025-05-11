@@ -15,7 +15,7 @@
 
     'author': "Bista Solution Pvt. Ltd.",
 
-    'depends': ['base', 'product', 'sale', 'stock', 'contacts', 'purchase', 'mail'],
+    'depends': ['base', 'product', 'sale', 'stock', 'mrp', 'purchase', 'mail'],
 
     # 'depends': ['base','product','sale','stock'],
 
@@ -25,6 +25,7 @@
         'views/mrp_production_view.xml',
         'views/sale_order_view.xml',
         'wizard/assign_serial_wizard.xml',
+        'wizard/mrp_reporting_wizard.xml',
     ],
 }
 

@@ -10,11 +10,12 @@
                 <button name="action_assign_serial_wizard" class="btn-primary" type="object" string="Assign Serial No"/>
             </xpath>
             <xpath expr="//field[@name='user_id']" position="after">
-                <field name="lot_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_create_edit':True}"/>
-<!--                <field name="lot_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}"/>-->
+                <field name="lot_ids" widget="many2many_tags" readonly="1"
+                       options="{'no_create': True, 'no_create_edit':True}"/>
+                <!--                <field name="lot_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True}"/>-->
             </xpath>
-             <xpath expr="//field[@name='lot_producing_id']" position="attributes">-->
-                <attribute name="domain">[('id','=',lot_ids)] </attribute>
+            <xpath expr="//field[@name='lot_producing_id']" position="attributes">-->
+                <attribute name="domain">[('id','=',lot_ids)]</attribute>
             </xpath>
         </field>
     </record>

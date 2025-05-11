@@ -1,4 +1,7 @@
-from odoo import fields,models,api
+from itertools import product
+
+from odoo import fields, models, api
+
 
 class SaleRma(models.Model):
     _name = "sale.rma"
@@ -6,14 +9,15 @@ class SaleRma(models.Model):
     _rec_name = 'team_id'
 
     team_id = fields.Char(copy=False, readonly=True, index=True, default="New", string="Team code")
-    sale_team_id = fields.Many2one("team.rma",string="Team Name")
+    sale_team_id = fields.Many2one("team.rma", string="Team Name")
     date = fields.Date(string="Date")
+    partner_id = fields.Many2one("res.partner", string="Customer")
     sale_order_id = fields.Many2one("sale.order", string="Sale order")
-    rma_line_ids = fields.One2many("sale.rma.line","rma_id",string="RMA lines")
+    rma_line_ids = fields.One2many("sale.rma.line", "rma_id", string="RMA lines")
     delivery_ids = fields.One2many("stock.picking", "picking_id", string="Deliveries")
     delivery_count = fields.Integer(default=0, compute='_compute_delivery_count')
-    invoice_ids = fields.One2many("account.move","rma_invoice_id", string="Invoices")
-    
+    invoice_ids = fields.One2many("account.move", "rma_invoice_id", string="Invoices")
+    product_ids = fields.Many2many("product.product", string="Products", compute="_compute_product_ids")
 
     @api.model_create_multi
     def create(self, vals):
@@ -98,5 +102,18 @@ class SaleRma(models.Model):
     @api.depends('delivery_ids.picking_id')
     def _compute_delivery_count(self):
         for rec in self:
-            self.delivery_count = self.env['stock.picking'].search_count([('picking_id','=',rec.id)])
+            self.delivery_count = self.env['stock.picking'].search_count([('picking_id', '=', rec.id)])
 
+    @api.depends('sale_order_id','rma_line_ids.product_id')
+    def _compute_product_ids(self):
+        for line in self.rma_line_ids:
+            if line.product_id:
+                self.product_ids = [(4,line.product_id.id)]
+
+    # @api.onchange('partner_id')
+    # def get_sale_order(self):
+    #     if self.partner_id:
+    #         domain = [('partner_id', '=', self.partner_id)]
+    #     else:
+    #         domain = []
+    #     return {'domain': {'sale_order_id': domain}}

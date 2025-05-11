@@ -1,4 +1,6 @@
 from odoo import fields,models,api
+from odoo.exceptions import ValidationError
+
 
 class SaleRmaLines(models.Model):
     _name = "sale.rma.line"
@@ -40,3 +42,12 @@ class SaleRmaLines(models.Model):
     def _compute_available_qty_to_invoice(self):
         for rec in self:
             rec.available_qty_to_invoice = rec.received_qty - rec.invoiced_qty
+
+    # @api.constrains('product_id')
+    # def validate_product_duplication(self):
+    #     for rec in self:
+    #         if rec.product_id:
+    #             product_id = self.env['sale.rma.line'].search_count([('product_id', '=', rec.product_id.id)])
+    #             if product_id > 1:
+    #                 raise ValidationError("Product already exist in RMA line!")
+

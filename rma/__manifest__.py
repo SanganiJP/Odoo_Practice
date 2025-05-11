@@ -21,7 +21,6 @@
         'security/ir.model.access.csv',
         'views/sale_rma_view.xml',
         'views/team_rma_view.xml',
-        'views/delivery_slip_report.xml',
         'wizard/sale_rma_return_wizard.xml',
         'wizard/sale_rma_invoice_wizard.xml',
         'wizard/sale_rma_add_product_wizard_form.xml',
