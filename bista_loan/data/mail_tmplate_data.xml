@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+    <!--Email template -->
+    <record id="emi_payment_request_email_template" model="mail.template">
+        <field name="name">Loan: EMI Payment Request</field>
+        <field name="model_id" ref="bista_loan.model_loan_system"/>
+        <field name="email_from">{{object.env.user.email}}</field>
+        <field name="email_to">{{object.partner_id.email}}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="subject">Loan EMI Payment Request</field>
+        <field name="description">Sent to customer for loan emi payment reminder.</field>
+        <field name="body_html" type="html">
+            <p>Hello,
+                <strong>
+                    <t t-out="object.partner_id.name"/>
+                </strong>
+            </p>
+            <br/>
+            <p>EMI Payment Date is
+                <t t-out="object.emi_date"/>
+            </p>
+            <p>EMI Payment Amount is
+                <t t-out="object.emi_amount"/>
+            </p>
+            <br/>
+            <p>Thank you</p>
+            <p>Best regards,</p>
+            <p>
+                <t t-out="object.env.user.name"/>
+            </p>
+        </field>
+    </record>
+</odoo>

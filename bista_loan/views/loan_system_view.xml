@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="loan_system_form_view" model="ir.ui.view">
+            <field name="name">loan_system.form</field>
+            <field name="model">loan.system</field>
+            <field name="arch" type="xml">
+                <form string="Loan System">
+                    <header>
+                        <button name="generate_emi_lines" type="object" class="btn-primary"
+                                string="Get EMI Information"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice" type="object"
+                                    class="oe_stat_button" icon="fa-pencil-square-o">
+                                <field name="invoice_count" widget="statinfo" string="Invoice"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group string="Customer">
+                                <field name="partner_id"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group string="Amount Detail">
+                                <field name="loan_amount"/>
+                                <field name="period_tenure"/>
+                                <field name="total_interest_amount"/>
+                                <field name="emi_amount"/>
+                                <field name="total_amount"/>
+                            </group>
+                            <group string="EMI Detail">
+                                <field name="emi_date"/>
+                                <field name="current_interest_rate" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Interest Rate">
+                                <field name="interest_rate_ids">
+                                    <list editable="bottom" decoration-success="is_active == True">
+                                        <field name="interest_rate"/>
+                                        <field name="date"/>
+                                        <field name="is_active" column_invisible="1"/>
+                                        <button name="activate_interest_rate"
+                                                type="object"
+                                                class="btn-primary"
+                                                string="Activate"
+                                                invisible="is_active or date &lt; datetime.date.today().strftime('%Y-%m-%d')"
+                                                confirm="Are you sure you want to apply this interest rate?"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="EMI Descriptions">
+                                <field name="emi_line_ids">
+                                    <list editable="bottom" decoration-danger="state == 'invoiced'" decoration-success="state == 'paid'">
+<!--                                    <list editable="bottom">-->
+                                        <field name="emi_date"/>
+                                        <field name="principal_paid"/>
+                                        <field name="interest_charged"/>
+                                        <field name="total_payment"/>
+                                        <field name="balance"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="loan_system_tree_view" model="ir.ui.view">
+            <field name="name">ProjectName.loan_system.tree</field>
+            <field name="model">loan.system</field>
+            <field name="arch" type="xml">
+                <list string="Loan System">
+                    <field name="partner_id"/>
+                    <field name="loan_amount"/>
+                    <field name="period_tenure"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="loan_system_act_window" model="ir.actions.act_window">
+            <field name="name">Loan System</field>
+            <field name="res_model">loan.system</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+        <menuitem id="loan_system_root" name="Bista Loan System"/>
+        <menuitem name="Loan System" id="loan_system_menu" parent="loan_system_root" action="loan_system_act_window"/>
+
+    </data>
+</odoo>
