@@ -30,5 +30,6 @@
         'views/sale_order_document.xml',
         'views/sale_order_report_template.xml',
     ],
+    'license': 'LGPL-3',
 }
 

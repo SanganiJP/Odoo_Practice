@@ -3,6 +3,12 @@ from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 
+STATUS = [('draft', 'Draft'),
+          ('to_approve', 'To Approve'),
+          ('to_reject', 'To Reject'),
+          ('approved', 'Approved')]
+
+
 class LoanSystem(models.Model):
     _name = 'loan.system'
     _description = 'Description'
@@ -10,72 +16,129 @@ class LoanSystem(models.Model):
 
     partner_id = fields.Many2one("res.partner", string="Customer")
     loan_amount = fields.Float("Loan Amount")
-    period_tenure = fields.Integer(string="Period Tenure", default=1)
+    period_tenure = fields.Integer(string="Period Tenure")
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date")
     emi_date = fields.Date(string="EMI Date", required=True)
     emi_amount = fields.Float(compute='_compute_emi_amount', string="EMI Amount", store=True)
-    total_interest_amount = fields.Float(compute='_compute_total_interest_amount', string="Total Interest Amount ", store=True)
-    total_amount = fields.Float(compute='_compute_total_amount', string="Total Amount", store=True)
+    total_interest_amount = fields.Float(compute='_compute_total_interest_amount', string="Total Interest Amount ",
+                                         store=True)
+    total_principle_amount = fields.Float(compute='_compute_total_principle_amount', string="Total Principal Amount",
+                                          store=True)
     emi_line_ids = fields.One2many("emi.lines", "loan_id")
     interest_rate_ids = fields.One2many("loan.interest.rate", "loan_id")
     current_interest_rate = fields.Float(string="Current Interest Rate")
     invoice_count = fields.Integer(compute='_compute_invoice_count', default=0, store=True)
     invoice_ids = fields.One2many('account.move', 'loan_id')
+    next_emi_date = fields.Date(compute='_compute_next_emi_date', string="Next EMI Date", store=True)
+    paid_principle_amount = fields.Float(string='paid Principle amount')
+    loan_stage = fields.Selection(STATUS, string="Stage", default='draft')
+    team_id = fields.Many2one("loan.approval.team", string="Team")
+    loan_approval_level_ids = fields.One2many("loan.approval.level", "loan_id")
+    next_approver = fields.Many2many('res.users', string="Next Approver")
+
+    @api.onchange('team_id')
+    def onchange_team_id(self):
+        self.loan_approval_level_ids.unlink()
+        lst = []
+        levels = self.env['approval.levels'].search([('team_id', '=', self.team_id.id)])
+        for level in levels:
+            lst.append((0,0,{
+                'name': level.name,
+                'team_level': level.team_level,
+                'team_member': level.team_member.ids,
+            }))
+        self.loan_approval_level_ids = lst
+
+    def action_confirm(self):
+        self.loan_stage = 'to_approve'
+
+    def action_reject(self):
+        pass
+
+    def action_approve(self):
+        pass
+
+    @api.depends('emi_line_ids.state', 'emi_date')
+    def _compute_next_emi_date(self):
+        for rec in self:
+            emi_rec = rec.emi_line_ids.filtered(lambda line: line.state == 'pending')
+            if emi_rec:
+                rec.next_emi_date = emi_rec[0].emi_date
+            else:
+                rec.next_emi_date = rec.emi_date
 
     @api.onchange('start_date', 'period_tenure')
     def onchange_end_date(self):
         if self.start_date:
             self.end_date = self.start_date + relativedelta(months=self.period_tenure)
 
-    @api.depends('loan_amount', 'period_tenure')
+    @api.depends('loan_amount', 'period_tenure', 'current_interest_rate')
     def _compute_emi_amount(self):
         for rec in self:
             if rec.loan_amount and rec.period_tenure:
-                ir = rec.interest_rate_ids.filtered(lambda line: line.is_active == True).interest_rate
-                # self.current_interest_rate = ir
-                if ir:
-                    rate = (ir / 12) / 100
-                    rec.emi_amount = round((rec.loan_amount * rate * pow(1 + rate, rec.period_tenure)) / (
-                            pow(1 + rate, rec.period_tenure) - 1))
+                month_interest_rate = (self.current_interest_rate / 1200)
+                pending_emi_lines = self.emi_line_ids.filtered(lambda line: line.state == 'pending')
+                # if pending_emi_lines :
+                self.emi_line_ids.filtered(lambda line: line.state == 'pending').unlink()
+                new_period_tenure = rec.period_tenure - len(self.emi_line_ids)
+                new_loan_amount = rec.loan_amount - sum(
+                    rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('total_payment'))
+                if self.current_interest_rate and new_period_tenure:
+                    rec.emi_amount = round(
+                        (new_loan_amount * month_interest_rate * pow(1 + month_interest_rate, new_period_tenure))
+                        / (pow(1 + month_interest_rate, new_period_tenure) - 1))
 
-    @api.depends('period_tenure', 'loan_amount', 'emi_amount')
+    @api.depends('emi_amount', 'emi_line_ids')
     def _compute_total_interest_amount(self):
         for rec in self:
             if rec.emi_amount:
-                rec.total_interest_amount = round(rec.emi_amount * rec.period_tenure - rec.loan_amount)
+                rec.total_interest_amount = round((rec.emi_amount * rec.period_tenure - rec.loan_amount) + sum(
+                    rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('interest_charged')))
 
-    @api.depends('period_tenure', 'emi_amount')
-    def _compute_total_amount(self):
+    @api.depends('total_interest_amount')
+    def _compute_total_principle_amount(self):
         for rec in self:
-            rec.total_amount = round(rec.emi_amount * rec.period_tenure)
+            if rec.total_interest_amount:
+                rec.total_principle_amount = rec.loan_amount + rec.total_interest_amount
+
+    @api.depends('invoice_ids')
+    def _compute_invoice_count(self):
+        for rec in self:
+            # rec.invoice_count = self.env['account.move'].search_count([('loan_id', '=', rec.id)])
+            rec.invoice_count = len(rec.invoice_ids)
 
     def generate_emi_lines(self):
-        emi_line_record_list = []
+        emi_line_record = []
         emi_date = self.emi_date
         emi_amount = self.emi_amount
         remaining_principal = self.loan_amount
 
-        ir = self.interest_rate_ids.filtered(lambda line: line.is_active == True).interest_rate
-        monthly_interest_rate = (ir / 12) / 100
+        # ir = self.interest_rate_ids.filtered(lambda line: line.is_active == True).interest_rate
+        monthly_interest_rate = (self.current_interest_rate / 12) / 100
 
-        for month in range(self.period_tenure):
+        # pending_emi_record = self.emi_line_ids.filtered(lambda line: line.state == 'pending')
+        # pending_emi_record.unlink()
+        # emi_line_record += self.emi_line_ids
+        emi_date = emi_date + relativedelta(months=len(self.emi_line_ids))
+        remaining_principal -= sum(
+            self.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('total_payment'))
+
+        for month in range(self.period_tenure - len(self.emi_line_ids)):
             interest = round(remaining_principal * monthly_interest_rate)
-            principal_paid = emi_amount - interest
-            remaining_principal = remaining_principal - principal_paid
-            emi_line_vals = {
+            principal_amount = emi_amount - interest
+            # total_payment = principal_amount + interest
+            remaining_principal = remaining_principal - principal_amount
+            vals = (0, 0, {
                 'emi_date': emi_date,
-                'principal_paid': principal_paid,
+                'principal_amount': principal_amount,
                 'interest_charged': interest,
                 'total_payment': emi_amount,
                 'balance': remaining_principal,
-                'loan_id': self.id,
-            }
-            emi_line_record_id = self.env['emi.lines'].create(emi_line_vals)
-            emi_line_record_list.append(emi_line_record_id.id)
+            })
+            emi_line_record.append(vals)
             emi_date = emi_date + relativedelta(months=1)
-
-        self.emi_line_ids = [(6, 0, emi_line_record_list)]
+        self.emi_line_ids = emi_line_record
 
     def action_view_invoice(self):
         form_view_id = self.env.ref('account.view_move_form').id
@@ -93,18 +156,12 @@ class LoanSystem(models.Model):
 
         return res
 
-    @api.depends('invoice_ids')
-    def _compute_invoice_count(self):
-        for rec in self:
-            rec.invoice_count = self.env['account.move'].search_count([('loan_id', '=', rec.id)])
-
-    def generate_emi_invoice(self):
+    def action_generate_emi_invoice(self):
         today = date.today()
-        # loan_record = self.env['loan.system'].search([('')])
         todays_emi = self.env['emi.lines'].search([
             ('emi_date', '=', today)
         ])
-        product_id = self.env['product.product'].search([('name', '=', 'emi')]).id
+        product_id = self.env.ref('bista_loan.product_loan_emi').id
         for rec in todays_emi:
             move_vals = {
                 'move_type': 'out_invoice',
@@ -127,101 +184,3 @@ class LoanSystem(models.Model):
             if rec.loan_id.partner_id.email:
                 template_id = self.env.ref('bista_loan.emi_payment_request_email_template')
                 template_id.send_mail(rec.loan_id.id, force_send=True)
-
-
-
-    # def invoice_payment(self):
-    #     invoices = self.env['account.move'].search([('state', '=', 'invoiced')])
-    #     for invoice in invoices:
-    #         self.env['account.payment.register'].with_context(active_model='account.move').create({'payment_date': fields.Date.today()}).action_create_payments()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def generate_emi_lines(self):
-    #     emi_date = self.emi_date
-    #     emi_amount = self.emi_amount
-    #     remaining_principal = self.loan_amount
-    #
-    #     ir = self.interest_rate_ids.filtered(lambda line: line.is_active == True).interest_rate
-    #     monthly_interest_rate = (ir / 1200)
-    #
-    #     self.emi_line_ids = [(5,0,0)]
-    #
-    #     for month in range(self.period_tenure):
-    #         interest = round(remaining_principal * monthly_interest_rate)
-    #         principal_paid = round(emi_amount - interest)
-    #         remaining_principal = round(remaining_principal - emi_amount)
-    #         self.env['emi.lines'].create({
-    #             'emi_date': emi_date,
-    #             'principal_paid': principal_paid,
-    #             'interest_charged': interest,
-    #             'total_payment' : emi_amount,
-    #             'loan_id': self.id,
-    #             'balance' : remaining_principal
-    #         })
-    #
-    #         print(f"Month === {month}",remaining_principal)
-    #         emi_date += relativedelta(months=1)

@@ -32,7 +32,7 @@
         # 'views/stock_picking_view.xml',
         'wizard/add_product_wizard_form.xml',
     ],
-
+    'license': 'LGPL-3',
     # 'installable': True,
     # 'application': True,
     # 'auto_install': False,

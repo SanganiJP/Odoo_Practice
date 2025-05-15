@@ -27,5 +27,6 @@
         'wizard/assign_serial_wizard.xml',
         'wizard/mrp_reporting_wizard.xml',
     ],
+    'license': 'LGPL-3',
 }
 

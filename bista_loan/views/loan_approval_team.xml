@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="loan_approval_team_form_view" model="ir.ui.view">
+        <field name="name">loan.approval.team.form</field>
+        <field name="model">loan.approval.team</field>
+        <field name="arch" type="xml">
+            <form string="Teams">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Approval Levels">
+                            <field name="approval_level_ids">
+                                <list editable="bottom">
+                                    <field name="team_level"/>
+                                    <field name="name"/>
+                                    <field name="team_member" widget="many2many_tags"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="loan_approval_team_list_view" model="ir.ui.view">
+        <field name="name">loan.approval.team.list</field>
+        <field name="model">loan.approval.team</field>
+        <field name="arch" type="xml">
+            <list string="Teams">
+                <field name="name"/>
+                <!--                    <field name="loan_amount"/>-->
+            </list>
+        </field>
+    </record>
+
+    <record id="teams_act_window" model="ir.actions.act_window">
+        <field name="name">Teams</field>
+        <field name="res_model">loan.approval.team</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem name="Configuration" id="configuration_menu" parent="loan_system_root"/>
+    <menuitem name="Teams" id="teams_menu" parent="configuration_menu" action="teams_act_window"/>
+</odoo>

@@ -26,4 +26,5 @@
         'wizard/sale_rma_add_product_wizard_form.xml',
         'views/purchase_order_view.xml',
     ],
+    'license': 'LGPL-3',
 }

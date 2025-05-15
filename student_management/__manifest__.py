@@ -26,4 +26,5 @@
         # 'views/previous_year_marks_views.xml',
         'views/tuition_fee_structure_views.xml',
     ],
+    'license': 'LGPL-3',
 }

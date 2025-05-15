@@ -24,4 +24,5 @@
         'views/probability_stages_view.xml',
         'views/student_activity_view.xml',
     ],
+    'license': 'LGPL-3',
 }

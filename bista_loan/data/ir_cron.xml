@@ -6,7 +6,7 @@
             <field name="name">Generate EMI Payment Invoice</field>
             <field name="model_id" ref="bista_loan.model_loan_system"/>
             <field name="state">code</field>
-            <field name="code">model.generate_emi_invoice()</field>
+            <field name="code">model.action_generate_emi_invoice()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="active">True</field>

@@ -25,5 +25,6 @@
         'views/purchase_order_view.xml',
         'views/chatter_activity_view.xml',
     ],
+    'license': 'LGPL-3',
 }
 

@@ -40,4 +40,5 @@
         'wizard/date_practice_wizard_view.xml',
         'wizard/on_hand_qty_update_wizard_view.xml',
     ],
+    'license': 'LGPL-3',
 }

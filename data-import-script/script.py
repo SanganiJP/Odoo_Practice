@@ -37,12 +37,13 @@ def import_work_center():
         if record[3]:
             alr_workcenters = record[3].split(',')
             for center in alr_workcenters:
-                center_id = odoo.env['mrp.workcenter'].search([('name', '=', center)])
+                center_id = odoo.env['mrp.workcenter'].search([('name', '=', center.strip())])
+                print(center)
                 alr_workcenter_list.append(center_id[0])
-                print(alr_workcenter_list)
+                # print(alr_workcenter_list)
 
         if len(alr_workcenter_list) > 0:
-            wc = odoo.env['mrp.workcenter'].search([('name', '=', record[0])])
+            wc = odoo.env['mrp.workcenter'].search([('name', '=', record[0].strip())])
             center = odoo.env['mrp.workcenter'].browse(wc)
             center.write({
                 'alternative_workcenter_ids': [(6, 0, alr_workcenter_list)],
@@ -50,4 +51,5 @@ def import_work_center():
 
 
 import_work_center()
+
 

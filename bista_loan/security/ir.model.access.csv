@@ -1,5 +1,17 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 
-loan_system_id,loan.system,model_loan_system,,1,1,1,1
-emi_lines_id,emi.lines,model_emi_lines,,1,1,1,1
-emi_loan_interest_rate,loan.interest.rate,model_loan_interest_rate,,1,1,1,1
+access_loan_system_id_manager,access.loan.system,model_loan_system,bista_loan.group_loan_system_manager,1,1,1,1
+access_loan_system_id_admin,access.loan.system,model_loan_system,bista_loan.group_loan_system_admin,1,1,1,1
+access_loan_system_id_user,access.loan.system,model_loan_system,bista_loan.group_loan_system_user,1,1,1,1
+
+access_emi_lines_id_manager,access.emi.lines,model_emi_lines,bista_loan.group_loan_system_manager,1,1,1,1
+access_emi_lines_id_admin,access.emi.lines,model_emi_lines,bista_loan.group_loan_system_admin,1,1,1,1
+access_emi_lines_id_user,access.emi.lines,model_emi_lines,bista_loan.group_loan_system_user,1,1,1,1
+
+access_emi_loan_interest_rate_manager,access.loan.interest.rate,model_loan_interest_rate,bista_loan.group_loan_system_manager,1,1,1,1
+access_emi_loan_interest_rate_admin,access.loan.interest.rate,model_loan_interest_rate,bista_loan.group_loan_system_admin,1,1,1,1
+access_emi_loan_interest_rate_user,access.loan.interest.rate,model_loan_interest_rate,bista_loan.group_loan_system_user,1,1,1,1
+
+access_loan_approval_team,access.loan.approval.team,model_loan_approval_team,,1,1,1,1
+access_approval_levels,access.approval.levels,model_approval_levels,,1,1,1,1
+access_loan_approval_level,access.loan.approval.level,model_loan_approval_level,,1,1,1,1

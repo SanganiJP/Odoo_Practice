@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<odoo noupdate="1">
+    <record id="product_loan_emi" model="product.template">
+        <field name="name">EMI</field>
+    </record>
+</odoo>

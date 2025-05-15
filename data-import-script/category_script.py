@@ -28,6 +28,8 @@ def import_product_categories():
             if len(parent_cat) > 1:
                 parent_category = odoo.env['product.category'].search([('name', '=', parent_cat[len(parent_cat) - 1])])
                 sub_parent_id = odoo.env['product.category'].search([('name', '=', parent_cat[len(parent_cat) - 2])])
+                if not sub_parent_id:
+                    print("not found!")
                 if parent_category:
                     parent_lst.append(parent_category[0])
                 else:
@@ -57,6 +59,5 @@ def import_product_categories():
                         'name': cat_list[cat_lst_length - 1],
                         'parent_id': parent_lst[0]
                     })
-
 
 import_product_categories()

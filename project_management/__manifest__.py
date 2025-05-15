@@ -24,5 +24,5 @@
         'views/project_types_views.xml',
         'wizard/project_info_wizard_view.xml',
     ],
-
+    'license': 'LGPL-3',
 }

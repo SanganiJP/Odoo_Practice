@@ -9,7 +9,14 @@
                 <form string="Loan System">
                     <header>
                         <button name="generate_emi_lines" type="object" class="btn-primary"
-                                string="Get EMI Information"/>
+                                string="Get EMI Information" invisible="loan_stage != 'draft'"/>
+                        <button name="action_confirm" string="Confirm" type="object" invisible="loan_stage != 'draft'"
+                                class="btn-primary"/>
+                        <button name="action_approve" type="object" class="btn-primary" invisible="loan_stage == 'draft'"
+                                string="Approve"/>
+                        <button name="action_reject" type="object" class="btn-primary" invisible="loan_stage == 'draft'"
+                                string="Reject"/>
+                        <field name="loan_stage" widget="statusbar" statusbar_visible="draft,to_approve,approved"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -21,6 +28,8 @@
                         <group>
                             <group string="Customer">
                                 <field name="partner_id"/>
+                                <field name="team_id" invisible="loan_stage == 'draft'"/>
+                                <field name="next_approver" widget="many2many_tags"/>
                             </group>
                             <group string="Dates">
                                 <field name="start_date"/>
@@ -31,11 +40,13 @@
                                 <field name="period_tenure"/>
                                 <field name="total_interest_amount"/>
                                 <field name="emi_amount"/>
-                                <field name="total_amount"/>
+                                <field name="total_principle_amount"/>
+                                <field name="paid_principle_amount"/>
                             </group>
                             <group string="EMI Detail">
                                 <field name="emi_date"/>
                                 <field name="current_interest_rate" readonly="1"/>
+                                <field name="next_emi_date" readonly="1"/>
                             </group>
                         </group>
                         <notebook>
@@ -56,14 +67,29 @@
                             </page>
                             <page string="EMI Descriptions">
                                 <field name="emi_line_ids">
-                                    <list editable="bottom" decoration-danger="state == 'invoiced'" decoration-success="state == 'paid'">
-<!--                                    <list editable="bottom">-->
+                                    <list editable="bottom" decoration-danger="state == 'invoiced'"
+                                          decoration-success="state == 'paid'">
+                                        <!--                                    <list editable="bottom">-->
                                         <field name="emi_date"/>
-                                        <field name="principal_paid"/>
+                                        <field name="principal_amount"/>
                                         <field name="interest_charged"/>
                                         <field name="total_payment"/>
                                         <field name="balance"/>
                                         <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Approval Process">
+                                <field name="loan_approval_level_ids">
+                                    <list>
+                                        <field name="team_level"/>
+                                        <field name="name"/>
+                                        <field name="loan_id" column_invisible="1"/>
+                                        <field name="team_member" widget="many2many_tags"/>
+                                        <field name="loan_approve_stage"/>
+                                        <field name="approved_by"/>
+                                        <field name="rejected_by"/>
+                                        <field name="approve_time"/>
                                     </list>
                                 </field>
                             </page>
@@ -96,6 +122,5 @@
         <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
         <menuitem id="loan_system_root" name="Bista Loan System"/>
         <menuitem name="Loan System" id="loan_system_menu" parent="loan_system_root" action="loan_system_act_window"/>
-
     </data>
 </odoo>
