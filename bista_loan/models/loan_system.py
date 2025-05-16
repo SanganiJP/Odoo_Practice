@@ -1,11 +1,14 @@
 from datetime import date
+from time import strptime
+
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
+from odoo.fields import Datetime
 
 STATUS = [('draft', 'Draft'),
           ('to_approve', 'To Approve'),
-          ('to_reject', 'To Reject'),
+          ('rejected', 'Rejected'),
           ('approved', 'Approved')]
 
 
@@ -35,29 +38,67 @@ class LoanSystem(models.Model):
     loan_stage = fields.Selection(STATUS, string="Stage", default='draft')
     team_id = fields.Many2one("loan.approval.team", string="Team")
     loan_approval_level_ids = fields.One2many("loan.approval.level", "loan_id")
+    # next_approver = fields.Many2many('res.users', compute='_compute_next_approver', string="Next Approver")
     next_approver = fields.Many2many('res.users', string="Next Approver")
+    current_user = fields.Many2one("res.users", compute='_compute_current_user', string="Current Loan System User")
+
+    def _compute_current_user(self):
+        for rec in self:
+            rec.current_user = rec.env.user.id
+
+    # def _compute_next_approver(self):
+    #     for rec in self:
+    #         rec.next_approver = rec.loan_approval_level_ids.filtered(
+    #             lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
 
     @api.onchange('team_id')
     def onchange_team_id(self):
-        self.loan_approval_level_ids.unlink()
-        lst = []
-        levels = self.env['approval.levels'].search([('team_id', '=', self.team_id.id)])
-        for level in levels:
-            lst.append((0,0,{
-                'name': level.name,
-                'team_level': level.team_level,
-                'team_member': level.team_member.ids,
-            }))
-        self.loan_approval_level_ids = lst
+        if self.team_id:
+            # level_ids = self.loan_approval_level_ids.ids
+            # self.env['loan.approval.level'].browse(level_ids).unlink()
+            self.loan_approval_level_ids = [(5,0,0)]
+            lst = []
+            # levels = self.env['approval.levels'].search([('team_id', '=', self.team_id.id)])
+            for level in self.team_id.approval_level_ids:
+                lst.append((0, 0, {
+                    'name': level.name,
+                    'team_level': level.team_level,
+                    'team_member': level.team_member.ids,
+                }))
+            self.loan_approval_level_ids = lst
+            self.loan_approval_level_ids[0].loan_approve_stage = 'to_approve'
+            self.next_approver = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
 
     def action_confirm(self):
         self.loan_stage = 'to_approve'
+        # self.loan_approval_level_ids[0].loan_approve_stage = 'to_approve'
 
     def action_reject(self):
-        pass
+        approval_level = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve')
+        if approval_level:
+            approval_level.loan_approve_stage = 'rejected'
+            approval_level.rejected_by = self.current_user
+            approval_level.approve_time = Datetime.today()
+            self.loan_stage = 'rejected'
 
     def action_approve(self):
-        pass
+        approval_level = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve')
+        if approval_level:
+            approval_level.loan_approve_stage = 'approved'
+            approval_level.approved_by = self.current_user
+            approval_level.approve_time = Datetime.today()
+
+        pending_approval_level = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'pending')
+        if pending_approval_level:
+            pending_approval_level[0].loan_approve_stage = 'to_approve'
+            self.next_approver = pending_approval_level[0].team_member.ids
+            # self.next_approver = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+
+        # to_approve_level = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve')
+        if not approval_level:
+            self.loan_stage = 'approved'
+
+        # self.loan_approval_level_ids[0].loan_approve_stage = 'approved'
 
     @api.depends('emi_line_ids.state', 'emi_date')
     def _compute_next_emi_date(self):

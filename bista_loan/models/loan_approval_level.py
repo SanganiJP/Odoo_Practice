@@ -2,7 +2,7 @@ from odoo import fields, models, api
 
 STATUS = [('pending', 'Pending'),
           ('to_approve', 'To Approve'),
-          ('to_reject', 'To Reject'),
+          ('rejected', 'Rejected'),
           ('approved', 'Approved')]
 
 class LoanApprovalLevel(models.Model):
@@ -14,7 +14,7 @@ class LoanApprovalLevel(models.Model):
     team_level = fields.Integer(string="Level", store=True)
     approved_by = fields.Many2one("res.users",string="Approved By")
     rejected_by = fields.Many2one("res.users",string="Rejected By")
-    approve_time = fields.Date(string="Approve Date")
-    loan_approve_stage = fields.Selection(STATUS, string="Status", default='draft')
+    approve_time = fields.Datetime(string="Approve Date")
+    loan_approve_stage = fields.Selection(STATUS, string="Status", default='pending')
     loan_id = fields.Many2one("loan.system",string="Loan Name")
 

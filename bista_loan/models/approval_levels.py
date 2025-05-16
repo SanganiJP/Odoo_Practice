@@ -22,13 +22,3 @@ class ApprovalLevels(models.Model):
                 team_level += 1
                 level.team_level = team_level
 
-    # @api.depends('approval_team_id.approval_levels')
-    # def _compute_level(self):
-    #     for rec in self:
-    #         l = 0
-    #         rec.level = l
-    #         for no in rec.approval_team_id.approval_levels:
-    #             l += 1
-    #             no.level = l
-    #     return
-
