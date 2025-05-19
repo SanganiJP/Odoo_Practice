@@ -66,12 +66,10 @@ class UpdateMrpComponentWizard(models.TransientModel):
             with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as temp:
                 temp.write(file_data)
                 temp.seek(0)
-                # Load workbook
                 workbook = openpyxl.load_workbook(temp.name)
                 sheet = workbook.active
                 lst = []
-                # Iterate over rows
-                for row in sheet.iter_rows(min_row=2, values_only=True):  # skip header
+                for row in sheet.iter_rows(min_row=2, values_only=True):
                     if self.operation_type == 'replace_component':
                         current_product_id = self.env['product.product'].search([('default_code', '=', row[1])])
                         new_product_id = self.env['product.product'].search([('default_code', '=', row[2])])
