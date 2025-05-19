@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="inherited_mrp_production_list_view" model="ir.ui.view">
+        <field name="name">inherited.mrp.production.list.view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header//button[@name = 'button_plan']" position="before">
+                <button name="action_open_update_mrp_component_wizard"
+                        string="Update Component"
+                        type="object"
+                        class="btn-primary"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

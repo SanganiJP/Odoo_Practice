@@ -3,65 +3,122 @@
     <data>
 
         <record id="loan_system_form_view" model="ir.ui.view">
-            <field name="name">loan_system.form</field>
+            <field name="name">loan_system_form</field>
             <field name="model">loan.system</field>
             <field name="arch" type="xml">
-                <form string="Loan System">
+                <form string="Loan Application Form">
                     <header>
-                        <button name="generate_emi_lines" type="object" class="btn-primary" string="Get EMI Information" invisible="loan_stage != 'draft'"/>
-                        <button name="action_confirm" string="Confirm" type="object" invisible="loan_stage != 'draft'" class="btn-primary"/>
-                        <button name="action_approve" type="object" class="btn-primary" invisible="loan_stage == 'draft' or current_user not in next_approver" string="Approve"/>
-                        <button name="action_reject" type="object" class="btn-primary" invisible="loan_stage == 'draft' or current_user not in next_approver" string="Reject"/>
-                        <field name="loan_stage" widget="statusbar" statusbar_visible="draft,to_approve,approved"/>
+                        <button name="generate_emi_lines"
+                                type="object"
+                                class="btn-primary"
+                                invisible="loan_stage != 'draft'"
+                                string="Get EMI Information"
+                        />
+
+                        <button name="action_confirm"
+                                type="object"
+                                invisible="loan_stage != 'draft'"
+                                class="btn-primary"
+                                string="Confirm"
+                        />
+
+                        <button name="action_approve"
+                                type="object"
+                                class="btn-primary"
+                                invisible="loan_stage != 'to_approve' or current_user not in next_approver"
+                                string="Approve"
+                        />
+
+                        <button name="action_reject"
+                                type="object"
+                                class="btn-primary"
+                                invisible="loan_stage != 'to_approve' or current_user not in next_approver"
+                                string="Reject"
+                        />
+
+                        <field name="loan_stage"
+                               widget="statusbar"
+                               statusbar_visible="draft,to_approve,approved"
+                        />
+
                     </header>
+
                     <sheet>
+
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_invoice" type="object"
-                                    class="oe_stat_button" icon="fa-pencil-square-o">
+                            <button name="action_view_invoice"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-pencil-square-o"
+                                    invisible="loan_stage != 'approved'">
                                 <field name="invoice_count" widget="statinfo" string="Invoice"/>
                             </button>
                         </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
                         <group>
-                            <group string="Customer">
-                                <field name="partner_id"/>
-<!--                                force_save="1"-->
+
+                            <group string="Customer Information">
+                                <field name="partner_id" required="1"/>
+                                <field name="assign_user_ids" widget="many2many_tags"/>
                                 <field name="team_id" invisible="loan_stage == 'draft'"/>
-                                <field name="next_approver" invisible="loan_stage == 'draft'" widget="many2many_tags" />
+                                <field name="next_approver" invisible="loan_stage == 'draft'" widget="many2many_tags"/>
                             </group>
-                            <group string="Dates">
+
+                            <group string="Loan Duration">
                                 <field name="start_date"/>
-                                <field name="end_date" readonly="1"/>
+                                <field name="end_date" readonly="1" force_save="1"/>
                             </group>
-                            <group string="Amount Detail">
-                                <field name="loan_amount"/>
-                                <field name="period_tenure"/>
+
+                            <group string="Loan Amount Details">
+                                <field name="loan_amount" required="1"/>
+                                <field name="period_tenure" required="1"/>
                                 <field name="total_interest_amount"/>
-                                <field name="emi_amount"/>
                                 <field name="total_principle_amount"/>
                                 <field name="paid_principle_amount"/>
                             </group>
-                            <group string="EMI Detail">
-                                <field name="emi_date"/>
-                                <field name="current_interest_rate" readonly="1"/>
+
+                            <group string="EMI Information">
+                                <field name="emi_amount"/>
+                                <field name="emi_date" required="1"/>
                                 <field name="next_emi_date" readonly="1"/>
+                                <field name="current_interest_rate" readonly="1"/>
                                 <field name="current_user" readonly="1"/>
                             </group>
+
                         </group>
+
                         <notebook>
+
                             <page string="Interest Rate">
+
                                 <field name="interest_rate_ids">
                                     <list editable="bottom" decoration-success="is_active == True">
-                                        <field name="interest_rate"/>
                                         <field name="date"/>
+                                        <field name="interest_rate"/>
                                         <field name="is_active" column_invisible="1"/>
-                                        <button name="activate_interest_rate" type="object" class="btn-primary" string="Activate" invisible="is_active or date &lt; datetime.date.today().strftime('%Y-%m-%d')" confirm="Are you sure you want to apply this interest rate?"/>
+                                        <button name="activate_interest_rate"
+                                                type="object"
+                                                class="btn-primary"
+                                                string="Activate"
+                                                invisible="is_active or date &lt; datetime.date.today().strftime('%Y-%m-%d')"
+                                                confirm="Are you sure you want to apply this interest rate?"
+                                        />
                                     </list>
                                 </field>
+
                             </page>
 
-                            <page string="EMI Descriptions">
+                            <page string="EMI Schedule">
+
                                 <field name="emi_line_ids">
-                                    <list editable="bottom" decoration-danger="state == 'invoiced'" decoration-success="state == 'paid'">
+                                    <list editable="bottom" decoration-danger="state == 'invoiced'"
+                                          decoration-success="state == 'paid'">
                                         <field name="emi_date"/>
                                         <field name="principal_amount"/>
                                         <field name="interest_charged"/>
@@ -70,9 +127,11 @@
                                         <field name="state"/>
                                     </list>
                                 </field>
+
                             </page>
 
-                            <page string="Approval Process">
+                            <page string="Approval Workflow">
+
                                 <field name="loan_approval_level_ids" readonly="1" force_save="1">
                                     <list>
                                         <field name="team_level"/>
@@ -85,6 +144,7 @@
                                         <field name="approve_time"/>
                                     </list>
                                 </field>
+
                             </page>
                         </notebook>
                     </sheet>
@@ -93,10 +153,11 @@
         </record>
 
         <record id="loan_system_tree_view" model="ir.ui.view">
-            <field name="name">ProjectName.loan_system.tree</field>
+            <field name="name">loan_system_list</field>
             <field name="model">loan.system</field>
             <field name="arch" type="xml">
                 <list string="Loan System">
+                    <field name="name"/>
                     <field name="partner_id"/>
                     <field name="loan_amount"/>
                     <field name="period_tenure"/>

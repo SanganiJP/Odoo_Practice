@@ -16,6 +16,18 @@ class MrpProduction(models.Model):
             'target': 'new',
         }
 
+    def action_open_update_mrp_component_wizard(self):
+        view_id = self.env.ref('manufacturing_customize.update_mrp_component_wizard_form_view').id
+
+        return {
+            'name': 'Update MO Component',
+            'view_mode': 'form',
+            'res_model': 'update.mrp.component.wizard',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
+
     # def button_mark_done(self):
     #     res = super().button_mark_done()
     #     # pass

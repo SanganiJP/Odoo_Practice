@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo noupdate="1">
+    <record id="sequence_res_loan" model="ir.sequence">
+        <field name="name">Res Loan</field>
+        <field name="code">loan.system</field>
+        <field name="prefix">LN/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

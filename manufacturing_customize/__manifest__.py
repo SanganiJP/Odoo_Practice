@@ -24,8 +24,10 @@
         'views/product_product_view.xml',
         'views/mrp_production_view.xml',
         'views/sale_order_view.xml',
+        'views/mrp_production_list_view.xml',
         'wizard/assign_serial_wizard.xml',
         'wizard/mrp_reporting_wizard.xml',
+        'wizard/update_mrp_component_wizard.xml',
     ],
     'license': 'LGPL-3',
 }

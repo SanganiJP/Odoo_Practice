@@ -14,7 +14,7 @@ class AccountPaymentRegister(models.TransientModel):
         record = self.env['account.move'].browse(rec_id)
         if record.loan_id:
             if record.amount_residual > self.amount:
-                raise UserError('You have pay full EMI Amount!')
+                raise UserError('You must have to pay full EMI Amount!')
             emi_line_rec = self.env['emi.lines'].search([('loan_id', '=', record.loan_id.id), ('emi_date', '=', today)])
             emi_line_rec.write({'state': 'paid'})
         return res

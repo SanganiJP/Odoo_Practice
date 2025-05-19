@@ -21,6 +21,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/ir_sequence.xml',
         'data/ir_cron.xml',
         'data/product_record.xml',
         'data/mail_template_data.xml',

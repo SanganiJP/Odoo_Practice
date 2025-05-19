@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="update_mrp_component_wizard_form_view" model="ir.ui.view">
+        <field name="name">update.mrp.component.wizard.form</field>
+        <field name="model">update.mrp.component.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="operation_type" widget="radio" required="1"/>
+                        <field name="excel_file_for_import"/>
+                        <field name="is_active" invisible="1"/>
+                        <button name="action_read" string="Read" type="object" class="btn-primary"/>
+                    </group>
+                    <notebook invisible="not is_active">
+                        <page string="Records" invisible="operation_type == 'update_component'">
+                            <field name="product_ids">
+                                <list editable="bottom" decoration-danger="state != 'draft'">
+                                    <field name="mo_number"/>
+                                    <field name="current_product"/>
+                                    <field name="new_product"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Records" invisible="operation_type == 'replace_component'">
+                            <field name="serial_product_ids">
+                                <list editable="bottom">
+                                    <field name="mo_number"/>
+                                    <field name="product_code"/>
+                                    <field name="old_serial"/>
+                                    <field name="new_serial"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="action_update_mo_component" string="Update" type="object" class="btn-primary"
+                                invisible="operation_type == 'replace_component'"/>
+                        <button name="action_replace_mo_component" string="Replace" type="object" class="btn-primary"
+                                invisible="operation_type == 'update_component'"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

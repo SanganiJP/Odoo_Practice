@@ -1,6 +1,4 @@
 from datetime import date
-from time import strptime
-
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
@@ -15,11 +13,11 @@ STATUS = [('draft', 'Draft'),
 class LoanSystem(models.Model):
     _name = 'loan.system'
     _description = 'Description'
-    _rec_name = 'partner_id'
 
-    partner_id = fields.Many2one("res.partner", string="Customer")
-    loan_amount = fields.Float("Loan Amount")
-    period_tenure = fields.Integer(string="Period Tenure")
+    name = fields.Char(string="Loan No", copy=False, readonly=True, index=True, default="New")
+    partner_id = fields.Many2one("res.partner", string="Customer", copy=False)
+    loan_amount = fields.Float(string="Loan Amount", copy=False)
+    period_tenure = fields.Integer(string="Period Tenure", copy=False)
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date")
     emi_date = fields.Date(string="EMI Date", required=True)
@@ -30,21 +28,28 @@ class LoanSystem(models.Model):
                                           store=True)
     emi_line_ids = fields.One2many("emi.lines", "loan_id")
     interest_rate_ids = fields.One2many("loan.interest.rate", "loan_id")
-    current_interest_rate = fields.Float(string="Current Interest Rate")
+    current_interest_rate = fields.Float(string="Current Interest Rate", copy=False)
     invoice_count = fields.Integer(compute='_compute_invoice_count', default=0, store=True)
     invoice_ids = fields.One2many('account.move', 'loan_id')
     next_emi_date = fields.Date(compute='_compute_next_emi_date', string="Next EMI Date", store=True)
     paid_principle_amount = fields.Float(string='paid Principle amount')
-    loan_stage = fields.Selection(STATUS, string="Stage", default='draft')
+    loan_stage = fields.Selection(STATUS, string="Stage", default='draft', copy=False)
     team_id = fields.Many2one("loan.approval.team", string="Team")
     loan_approval_level_ids = fields.One2many("loan.approval.level", "loan_id")
     # next_approver = fields.Many2many('res.users', compute='_compute_next_approver', string="Next Approver")
     next_approver = fields.Many2many('res.users', string="Next Approver")
-    current_user = fields.Many2one("res.users", compute='_compute_current_user', string="Current Loan System User")
+    current_user = fields.Many2one('res.users', compute='_compute_current_user', string="Current Loan System User")
+    assign_user_ids = fields.Many2many('res.users', "rel_res_users", column1="loan_id", column2="res_users_id", string="Assign To")
+
+    @api.model_create_multi
+    def create(self, val_list):
+        res = super(LoanSystem, self).create(val_list)
+        for record in res:
+            record.name = self.env["ir.sequence"].next_by_code('loan.system')
+        return res
 
     def _compute_current_user(self):
-        for rec in self:
-            rec.current_user = rec.env.user.id
+        self.current_user = self.env.user.id
 
     # def _compute_next_approver(self):
     #     for rec in self:
@@ -54,8 +59,6 @@ class LoanSystem(models.Model):
     @api.onchange('team_id')
     def onchange_team_id(self):
         if self.team_id:
-            # level_ids = self.loan_approval_level_ids.ids
-            # self.env['loan.approval.level'].browse(level_ids).unlink()
             self.loan_approval_level_ids = [(5,0,0)]
             lst = []
             # levels = self.env['approval.levels'].search([('team_id', '=', self.team_id.id)])
@@ -68,6 +71,7 @@ class LoanSystem(models.Model):
             self.loan_approval_level_ids = lst
             self.loan_approval_level_ids[0].loan_approve_stage = 'to_approve'
             self.next_approver = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+            self.assign_user_ids = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
 
     def action_confirm(self):
         self.loan_stage = 'to_approve'
@@ -92,13 +96,11 @@ class LoanSystem(models.Model):
         if pending_approval_level:
             pending_approval_level[0].loan_approve_stage = 'to_approve'
             self.next_approver = pending_approval_level[0].team_member.ids
-            # self.next_approver = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+            self.assign_user_ids = pending_approval_level[0].team_member.ids
 
-        # to_approve_level = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve')
         if not approval_level:
             self.loan_stage = 'approved'
 
-        # self.loan_approval_level_ids[0].loan_approve_stage = 'approved'
 
     @api.depends('emi_line_ids.state', 'emi_date')
     def _compute_next_emi_date(self):
@@ -194,13 +196,13 @@ class LoanSystem(models.Model):
             'target': 'current',
             'domain': [('loan_id', '=', self.id)],
         }
-
         return res
 
     def action_generate_emi_invoice(self):
         today = date.today()
         todays_emi = self.env['emi.lines'].search([
-            ('emi_date', '=', today)
+            ('emi_date', '=', today),
+            ('loan_id.loan_stage', '=', 'approved')
         ])
         product_id = self.env.ref('bista_loan.product_loan_emi').id
         for rec in todays_emi:
@@ -222,6 +224,6 @@ class LoanSystem(models.Model):
             self.env['account.move.line'].create(move_line_vals)
             rec.state = 'invoiced'
             invoice.action_post()
-            if rec.loan_id.partner_id.email:
-                template_id = self.env.ref('bista_loan.emi_payment_request_email_template')
-                template_id.send_mail(rec.loan_id.id, force_send=True)
+            # if rec.loan_id.partner_id.email:
+            #     template_id = self.env.ref('bista_loan.emi_payment_request_email_template')
+            #     template_id.send_mail(rec.loan_id.id, force_send=True)
