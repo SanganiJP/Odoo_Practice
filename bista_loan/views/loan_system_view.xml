@@ -11,7 +11,7 @@
                         <button name="generate_emi_lines"
                                 type="object"
                                 class="btn-primary"
-                                invisible="loan_stage != 'draft'"
+                                invisible="loan_stage != 'to_approve'"
                                 string="Get EMI Information"
                         />
 
@@ -66,8 +66,8 @@
                             <group string="Customer Information">
                                 <field name="partner_id" required="1"/>
                                 <field name="assign_user_ids" widget="many2many_tags"/>
-                                <field name="team_id" invisible="loan_stage == 'draft'"/>
-                                <field name="next_approver" invisible="loan_stage == 'draft'" widget="many2many_tags"/>
+                                <field name="team_id" required="1"/>
+                                <field name="next_approver" widget="many2many_tags" readonly="1"/>
                             </group>
 
                             <group string="Loan Duration">
@@ -81,6 +81,7 @@
                                 <field name="total_interest_amount"/>
                                 <field name="total_principle_amount"/>
                                 <field name="paid_principle_amount"/>
+                                <field name="pending_principle_amount"/>
                             </group>
 
                             <group string="EMI Information">
@@ -88,6 +89,8 @@
                                 <field name="emi_date" required="1"/>
                                 <field name="next_emi_date" readonly="1"/>
                                 <field name="current_interest_rate" readonly="1"/>
+                                <field name="paid_interest_amount"/>
+                                <field name="pending_interest_amount"/>
                                 <field name="current_user" readonly="1"/>
                             </group>
 

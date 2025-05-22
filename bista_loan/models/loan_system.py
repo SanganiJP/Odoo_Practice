@@ -32,15 +32,18 @@ class LoanSystem(models.Model):
     invoice_count = fields.Integer(compute='_compute_invoice_count', default=0, store=True)
     invoice_ids = fields.One2many('account.move', 'loan_id')
     next_emi_date = fields.Date(compute='_compute_next_emi_date', string="Next EMI Date", store=True)
-    paid_principle_amount = fields.Float(string='paid Principle amount')
+    paid_principle_amount = fields.Float(compute='_compute_paid_principle_amount', string='Paid Principle amount')
+    pending_principle_amount = fields.Float(compute='_compute_pending_principle_amount', string='Pending Principle amount')
     loan_stage = fields.Selection(STATUS, string="Stage", default='draft', copy=False)
-    team_id = fields.Many2one("loan.approval.team", string="Team")
+    team_id = fields.Many2one("loan.approval.team", string="Team", copy=False)
     loan_approval_level_ids = fields.One2many("loan.approval.level", "loan_id")
     # next_approver = fields.Many2many('res.users', compute='_compute_next_approver', string="Next Approver")
-    next_approver = fields.Many2many('res.users', string="Next Approver")
+    next_approver = fields.Many2many('res.users', string="Next Approver", copy=False)
     current_user = fields.Many2one('res.users', compute='_compute_current_user', string="Current Loan System User")
     assign_user_ids = fields.Many2many('res.users', "rel_res_users", column1="loan_id", column2="res_users_id",
-                                       string="Assign To")
+                                       string="Assign To", copy=False)
+    paid_interest_amount = fields.Float(compute="_compute_paid_interest_amount", string="Paid interest amount")
+    pending_interest_amount = fields.Float(compute="_compute_pending_interest_amount", string="Pending interest amount")
 
     @api.model_create_multi
     def create(self, val_list):
@@ -52,13 +55,48 @@ class LoanSystem(models.Model):
     def _compute_current_user(self):
         self.current_user = self.env.user.id
 
-    # def _compute_next_approver(self):
-    #     for rec in self:
-    #         rec.next_approver = rec.loan_approval_level_ids.filtered(
-    #             lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+    @api.depends('emi_line_ids.state')
+    def _compute_paid_principle_amount(self):
+        for rec in self:
+            rec.paid_principle_amount = sum(rec.emi_line_ids.filtered(lambda line: line.state == 'paid').mapped('principal_amount'))
 
-    @api.onchange('team_id')
-    def onchange_team_id(self):
+    def _compute_pending_principle_amount(self):
+        for rec in self:
+            rec.pending_principle_amount = sum(rec.emi_line_ids.filtered(lambda line: line.state == 'pending').mapped('principal_amount'))
+
+    def _compute_paid_interest_amount(self):
+        for rec in self:
+            rec.paid_interest_amount = sum(rec.emi_line_ids.filtered(lambda line: line.state == 'paid').mapped('interest_charged'))
+          
+    def _compute_pending_interest_amount(self):
+        for rec in self:
+            rec.pending_interest_amount = sum(rec.emi_line_ids.filtered(lambda line: line.state == 'pending').mapped('interest_charged'))
+        
+    # @api.onchange('team_id')
+    # def onchange_team_id(self):
+        # if self.team_id:
+        #     self.loan_approval_level_ids = [(5, 0, 0)]
+        #     self.assign_user_ids = [(5, 0, 0)]
+        #     lst = []
+        #     # levels = self.env['approval.levels'].search([('team_id', '=', self.team_id.id)])
+        #     for level in self.team_id.approval_level_ids:
+        #         lst.append((0, 0, {
+        #             'name': level.name,
+        #             'team_level': level.team_level,
+        #             'team_member': level.team_member.ids,
+        #         }))
+        #     self.loan_approval_level_ids = lst
+        #     self.loan_approval_level_ids[0].loan_approve_stage = 'to_approve'
+        #     self.next_approver = self.loan_approval_level_ids.filtered(
+        #         lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+        #     user_ids = self.loan_approval_level_ids.filtered(
+        #         lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+        #     for user_id in user_ids:
+        #         self.assign_user_ids = [(4, user_id)]
+            # self.assign_user_ids = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
+
+    def action_confirm(self):
+        self.loan_stage = 'to_approve'
         if self.team_id:
             self.loan_approval_level_ids = [(5, 0, 0)]
             self.assign_user_ids = [(5, 0, 0)]
@@ -78,10 +116,6 @@ class LoanSystem(models.Model):
                 lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
             for user_id in user_ids:
                 self.assign_user_ids = [(4, user_id)]
-            # self.assign_user_ids = self.loan_approval_level_ids.filtered(lambda level: level.loan_approve_stage == 'to_approve').team_member.ids
-
-    def action_confirm(self):
-        self.loan_stage = 'to_approve'
         # self.loan_approval_level_ids[0].loan_approve_stage = 'to_approve'
 
     def action_reject(self):
@@ -146,14 +180,14 @@ class LoanSystem(models.Model):
                 if self.current_interest_rate and new_period_tenure:
                     rec.emi_amount = round(
                         (new_loan_amount * month_interest_rate * pow(1 + month_interest_rate, new_period_tenure))
-                        / (pow(1 + month_interest_rate, new_period_tenure) - 1))
+                        / (pow(1 + month_interest_rate, new_period_tenure) - 1), 4)
 
     @api.depends('emi_amount', 'emi_line_ids')
     def _compute_total_interest_amount(self):
         for rec in self:
             if rec.emi_amount:
                 rec.total_interest_amount = round((rec.emi_amount * rec.period_tenure - rec.loan_amount) + sum(
-                    rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('interest_charged')))
+                    rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('interest_charged')), 4)
 
     @api.depends('total_interest_amount')
     def _compute_total_principle_amount(self):
@@ -184,7 +218,7 @@ class LoanSystem(models.Model):
             self.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('total_payment'))
 
         for month in range(self.period_tenure - len(self.emi_line_ids)):
-            interest = round(remaining_principal * monthly_interest_rate)
+            interest = round((remaining_principal * monthly_interest_rate), 4)
             principal_amount = emi_amount - interest
             # total_payment = principal_amount + interest
             remaining_principal = remaining_principal - principal_amount
@@ -240,6 +274,6 @@ class LoanSystem(models.Model):
             self.env['account.move.line'].create(move_line_vals)
             rec.state = 'invoiced'
             invoice.action_post()
-            if rec.loan_id.partner_id.email:
-                template_id = self.env.ref('bista_loan.emi_payment_request_email_template')
-                template_id.send_mail(rec.loan_id.id, force_send=True)
+            # if rec.loan_id.partner_id.email:
+            #     template_id = self.env.ref('bista_loan.emi_payment_request_email_template')
+            #     template_id.send_mail(rec.loan_id.id, force_send=True)

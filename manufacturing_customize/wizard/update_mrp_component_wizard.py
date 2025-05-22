@@ -35,7 +35,6 @@ class UpdateMrpComponentWizard(models.TransientModel):
                     line.lot_ids = (3, old_serial_id.id)
                     line.lot_ids = (4, new_serial_id.id)
 
-
     def action_replace_mo_component(self):
         records = self.env['mo.component.data'].search([('mo_product_id', '=', self.id)])
         mo_rec_id = 0
@@ -45,17 +44,18 @@ class UpdateMrpComponentWizard(models.TransientModel):
                 if rec.state != 'draft':
                     continue
                 else:
-                    data = []
-                    same_mo_records = self.env['mo.component.data'].search(
-                        [('mo_product_id', '=', self.id), ('mo_number', '=', rec.mo_number)])
-                    for rec in same_mo_records:
-                        data.append((0, 0, {
-                            'product_id': rec.new_product.id,
-                            # 'product_uom_qyt': 1
-                        }))
-                    mo_reord.move_raw_ids = False
-                    mo_reord.move_raw_ids = data
-                    mo_rec_id = mo_reord.id
+                    pass
+                    # data = []
+                    # same_mo_records = self.env['mo.component.data'].search(
+                    #     [('mo_product_id', '=', self.id), ('mo_number', '=', rec.mo_number)])
+                    # for rec in same_mo_records:
+                    #     data.append((0, 0, {
+                    #         'product_id': rec.new_product.id,
+                    #         # 'product_uom_qyt': 1
+                    #     }))
+                    # mo_reord.move_raw_ids = False
+                    # mo_reord.move_raw_ids = data
+                    # mo_rec_id = mo_reord.id
 
     def action_read(self):
         if self.excel_file_for_import:
