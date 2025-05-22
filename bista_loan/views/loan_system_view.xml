@@ -38,13 +38,13 @@
 
                         <field name="loan_stage"
                                widget="statusbar"
-                               statusbar_visible="draft,to_approve,approved"
+                               statusbar_visible="draft,to_approve"
                         />
 
                     </header>
 
                     <sheet>
-
+                        <widget name="web_ribbon" title="Approved" invisible="loan_stage != 'approved'"/>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_invoice"
                                     type="object"

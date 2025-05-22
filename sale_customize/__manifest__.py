@@ -19,6 +19,7 @@
 
     'data': [
         'views/sale_order_view.xml',
+        'views/product_pricelist_view.xml'
     ],
     'license': 'LGPL-3',
 }
