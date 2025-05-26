@@ -4,4 +4,7 @@
     <record id="product_loan_emi" model="product.product">
         <field name="name">EMI</field>
     </record>
+    <record id="product_loan_advance_payment" model="product.product">
+        <field name="name">Advance Payment</field>
+    </record>
 </odoo>

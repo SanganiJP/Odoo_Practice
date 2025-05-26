@@ -5,3 +5,4 @@ from . import account_move
 from . import loan_approval_team
 from . import approval_levels
 from . import loan_approval_level
+from . import advance_payment

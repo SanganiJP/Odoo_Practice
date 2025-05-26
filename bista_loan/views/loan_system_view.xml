@@ -11,7 +11,6 @@
                         <button name="generate_emi_lines"
                                 type="object"
                                 class="btn-primary"
-                                invisible="loan_stage != 'to_approve'"
                                 string="Get EMI Information"
                         />
 
@@ -46,12 +45,24 @@
                     <sheet>
                         <widget name="web_ribbon" title="Approved" invisible="loan_stage != 'approved'"/>
                         <div class="oe_button_box" name="button_box">
+<!--                            <button name="action_view_invoice"-->
+<!--                                    type="object"-->
+<!--                                    class="oe_stat_button"-->
+<!--                                    icon="fa-pencil-square-o"-->
+<!--                                    invisible="loan_stage != 'approved'">-->
+<!--                                <field name="invoice_count" widget="statinfo" string="Invoice"/>-->
+<!--                            </button>-->
                             <button name="action_view_invoice"
                                     type="object"
                                     class="oe_stat_button"
-                                    icon="fa-pencil-square-o"
-                                    invisible="loan_stage != 'approved'">
+                                    icon="fa-pencil-square-o">
                                 <field name="invoice_count" widget="statinfo" string="Invoice"/>
+                            </button>
+                            <button name="action_view_advance_payment_bill"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-pencil-square-o">
+                                <field name="advance_payment_count" widget="statinfo" string="Payment Bills"/>
                             </button>
                         </div>
 
@@ -71,6 +82,7 @@
                             </group>
 
                             <group string="Loan Duration">
+                                <field name="is_payment_done"/>
                                 <field name="start_date"/>
                                 <field name="end_date" readonly="1" force_save="1"/>
                             </group>
@@ -148,6 +160,18 @@
                                     </list>
                                 </field>
 
+                            </page>
+
+                            <page string="Advance Payments">
+                                <field name="advance_payments_ids">
+                                    <list editable="bottom">
+                                        <field name="payment_date"/>
+                                        <field name="payment_amount"/>
+                                        <field name="is_paid"/>
+                                        <button name="process_advance_payment" type="object" string="Pay"
+                                                class="btn-primary"/>
+                                    </list>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>

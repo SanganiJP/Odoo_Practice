@@ -9,7 +9,6 @@ class LoanInterestRate(models.Model):
     interest_rate = fields.Float(string="Interest Rate")
     is_active = fields.Boolean(string="Active")
     date = fields.Date(string="Date", required=True)
-    # today =
 
     def activate_interest_rate(self):
         self.loan_id.current_interest_rate = self.interest_rate

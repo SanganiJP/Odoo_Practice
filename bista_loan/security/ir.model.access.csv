@@ -15,3 +15,7 @@ access_emi_loan_interest_rate_user,access.loan.interest.rate,model_loan_interest
 access_loan_approval_team,access.loan.approval.team,model_loan_approval_team,,1,1,1,1
 access_approval_levels,access.approval.levels,model_approval_levels,,1,1,1,1
 access_loan_approval_level,access.loan.approval.level,model_loan_approval_level,,1,1,1,1
+
+access_advance_payment,access.advance.payment,model_advance_payment,,1,1,1,1
+
+
