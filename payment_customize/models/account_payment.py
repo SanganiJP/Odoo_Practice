@@ -50,15 +50,10 @@ class AccountPayment(models.Model):
             else:
                 self.remaining_amount = 0
 
-    # self.ensure_one()
-    # lines = self.env['account.move.line'].browse(line_id)
-    # lines += self.line_ids.filtered(lambda line: line.account_id == lines[0].account_id and not line.reconciled)
-    # return lines.reconcile()
-
     def action_post(self):
         res = super().action_post()
-        # line_id = self.move_id.line_ids.filtered(lambda line : line.credit > 0)
-        # for invoice in self.invoice_rec_ids:
-        #     invoice_id = self.env['account.move'].search([('name','=',invoice.name)])
-        #     invoice_id.js_assign_outstanding_line(line_id.id)
+        line_id = self.move_id.line_ids.filtered(lambda line : line.credit > 0)
+        for invoice in self.invoice_rec_ids:
+            invoice_id = self.env['account.move'].search([('name','=',invoice.name)])
+            invoice_id.js_assign_outstanding_line(line_id.id)
         return res

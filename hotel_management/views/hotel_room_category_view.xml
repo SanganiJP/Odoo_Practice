@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--Form View-->
+    <record id="hotel_room_category_form_view" model="ir.ui.view">
+        <field name="name">hotel.room.category.form</field>
+        <field name="model">hotel.room.category</field>
+        <field name="arch" type="xml">
+            <form string="Categories">
+                <sheet>
+                    <group>
+                        <group string="Room Category">
+                            <field name="name"/>
+                            <field name="has_ac"/>
+                            <field name="number_of_beds"/>
+                            <field name="room_price"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--List View-->
+    <record id="hotel_room_category_list_view" model="ir.ui.view">
+        <field name="name">hotel.room.category.list</field>
+        <field name="model">hotel.room.category</field>
+        <field name="arch" type="xml">
+            <list string="Categories">
+                <field name="name"/>
+                <field name="room_price"/>
+            </list>
+        </field>
+    </record>
+
+    <!--Menu action-->
+    <record id="hotel_room_category_act_window" model="ir.actions.act_window">
+        <field name="name">Room Categories</field>
+        <field name="res_model">hotel.room.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!--Menu Item-->
+    <menuitem name="Configuration" id="configuration_menu" parent="hotel_management_root_menu_id"/>
+    <menuitem name="Room Categories" id="hotel_room_category_menu" parent="configuration_menu" action="hotel_room_category_act_window"/>
+
+</odoo>

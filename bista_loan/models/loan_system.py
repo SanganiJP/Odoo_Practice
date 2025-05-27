@@ -13,6 +13,7 @@ STATUS = [('draft', 'Draft'),
 class LoanSystem(models.Model):
     _name = 'loan.system'
     _description = 'Description'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Loan No", copy=False, readonly=True, index=True, default="New")
     partner_id = fields.Many2one("res.partner", string="Customer", copy=False)
@@ -35,7 +36,7 @@ class LoanSystem(models.Model):
     paid_principle_amount = fields.Float(compute='_compute_paid_principle_amount', string='Paid Principle amount')
     pending_principle_amount = fields.Float(compute='_compute_pending_principle_amount',
                                             string='Pending Principle amount')
-    loan_stage = fields.Selection(STATUS, string="Stage", default='draft', copy=False)
+    loan_stage = fields.Selection(STATUS, string="Stage", default='draft', copy=False, tracking=True)
     team_id = fields.Many2one("loan.approval.team", string="Team", copy=False)
     loan_approval_level_ids = fields.One2many("loan.approval.level", "loan_id")
     # next_approver = fields.Many2many('res.users', compute='_compute_next_approver', string="Next Approver")
@@ -199,15 +200,12 @@ class LoanSystem(models.Model):
                         / (pow(1 + month_interest_rate, new_period_tenure) - 1), 4)
 
     @api.depends('emi_amount', 'emi_line_ids')
-    # @api.depends('emi_amount')
     def _compute_total_interest_amount(self):
         for rec in self:
             if rec.emi_amount:
                 advance_payment_amount = rec.advance_payments_ids.filtered(lambda line: line.payment_date == date.today()).payment_amount
                 if advance_payment_amount:
-                    new_period_tenure = rec.period_tenure - len(self.emi_line_ids.filtered(lambda line: line.state != 'pending'))
-                    rec.total_interest_amount = round((rec.emi_amount * new_period_tenure - rec.pending_principle_amount) + sum(
-                        rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('interest_charged')), 4)
+                    rec.total_interest_amount = rec.paid_interest_amount + rec.pending_interest_amount
                 else:
                     rec.total_interest_amount = round((rec.emi_amount * rec.period_tenure - rec.loan_amount) + sum(
                         rec.emi_line_ids.filtered(lambda line: line.state != 'pending').mapped('interest_charged')), 4)

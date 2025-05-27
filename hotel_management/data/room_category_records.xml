@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="single_bed_standard_category" model="hotel.room.category">
+        <field name="name">Standard</field>
+        <field name="has_ac">False</field>
+        <field name="room_price">1000</field>
+        <field name="number_of_beds">1</field>
+    </record>
+
+    <record id="single_bed_deluxe_category" model="hotel.room.category">
+        <field name="name">Deluxe</field>
+        <field name="has_ac">True</field>
+        <field name="room_price">1500</field>
+        <field name="number_of_beds">1</field>
+    </record>
+
+    <record id="single_bed_suite_category" model="hotel.room.category">
+        <field name="name">Suite</field>
+        <field name="has_ac">True</field>
+        <field name="room_price">2000</field>
+        <field name="number_of_beds">1</field>
+    </record>
+
+     <record id="double_bed_standard_category" model="hotel.room.category">
+        <field name="name">Standard Double</field>
+        <field name="has_ac">False</field>
+        <field name="room_price">1800</field>
+        <field name="number_of_beds">2</field>
+    </record>
+
+    <record id="double_bed_deluxe_category" model="hotel.room.category">
+        <field name="name">Deluxe Double</field>
+        <field name="has_ac">True</field>
+        <field name="room_price">2500</field>
+        <field name="number_of_beds">2</field>
+    </record>
+
+    <record id="double_bed_suite_category" model="hotel.room.category">
+        <field name="name">Suite Double</field>
+        <field name="has_ac">True</field>
+        <field name="room_price">3200</field>
+        <field name="number_of_beds">2</field>
+    </record>
+</odoo>

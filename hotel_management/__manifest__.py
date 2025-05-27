@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'Loan System',
+    'name': 'Hotel Management System',
 
     'summary': 'This model will help in management',
 
@@ -16,21 +16,21 @@
 
     'author': "Bista Solution Pvt. Ltd.",
 
-    'depends': ['base', 'account', 'mail'],
+    'depends': ['base'],
 
     'data': [
-        'security/security.xml',
         'security/ir.model.access.csv',
+        'data/room_category_records.xml',
+        'data/hotel_room_records.xml',
         'data/ir_sequence.xml',
-        'data/ir_cron.xml',
-        'data/product_record.xml',
-        'data/mail_template_data.xml',
-        'views/loan_system_view.xml',
-        'views/loan_approval_team.xml',
-        'views/approval_levels_view.xml',
+        'views/hotel_booking_view.xml',
+        'views/hotel_room_view.xml',
+        'views/hotel_room_category_view.xml',
     ],
     'license': 'LGPL-3',
     # 'installable': True,
     # 'application': True,
     # 'auto_install': False,
 }
+
+# --limit-time-cpu=6000 --limit-time-real=10000
