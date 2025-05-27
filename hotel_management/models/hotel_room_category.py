@@ -10,5 +10,4 @@ class HotelRoomCategory(models.Model):
     number_of_beds = fields.Integer(string="Number of Beds")
     has_ac = fields.Boolean(string="Has AC")
     room_price = fields.Float(string="Room Price")
-    # room_type = fields.Selection([('standard','Standard'), ('deluxe','Deluxe'), ('suite','Suite')], default='standard', string="Room Type", required=True)
-    # booking_id = fields.Many2one()
+    room_ids = fields.One2many("hotel.room", "category_id", string="Rooms")

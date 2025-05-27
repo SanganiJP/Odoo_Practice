@@ -4,7 +4,7 @@
     <record id="booking_id_sequence_" model="ir.sequence">
         <field name="name">Booking ID</field>
         <field name="code">hotel.booking</field>
-        <field name="prefix">B-</field>
+        <field name="prefix">RES-</field>
         <field name="padding">4</field>
     </record>
 </odoo>

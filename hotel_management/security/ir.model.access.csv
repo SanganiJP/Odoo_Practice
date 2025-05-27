@@ -1,7 +1,19 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 
-access_hotel_booking,access.hotel.booking,model_hotel_booking,,1,1,1,1
-access_hotel_room,access.hotel.room,model_hotel_room,,1,1,1,1
-access_hotel_room_category,access.hotel.room.category,model_hotel_room_category,,1,1,1,1
+access_hotel_booking_user,access.hotel.booking.user,model_hotel_booking,hotel_management.group_hotel_management_user,1,1,1,0
+access_hotel_booking_manager,access.hotel.booking.manager,model_hotel_booking,hotel_management.group_hotel_management_manager,1,1,1,1
+access_hotel_booking_admin,access.hotel.booking.admin,model_hotel_booking,hotel_management.group_hotel_management_admin,1,1,1,1
+
+access_hotel_room_user,access.hotel.room.user,model_hotel_room,hotel_management.group_hotel_management_user,1,0,0,1
+access_hotel_room_manager,access.hotel.room.manager,model_hotel_room,hotel_management.group_hotel_management_manager,1,1,0,1
+access_hotel_room_admin,access.hotel.room.admin,model_hotel_room,hotel_management.group_hotel_management_admin,1,1,1,1
+
+access_hotel_room_category_user,access.hotel.room.category.user,model_hotel_room_category,hotel_management.group_hotel_management_user,1,0,0,0
+access_hotel_room_category_manager,access.hotel.room.category.manager,model_hotel_room_category,hotel_management.group_hotel_management_manager,1,1,0,0
+access_hotel_room_category_admin,access.hotel.room.category.admin,model_hotel_room_category,hotel_management.group_hotel_management_admin,1,1,1,1
+
+access_hotel_guest_user,access.hotel.guest.user,model_hotel_guest,hotel_management.group_hotel_management_user,1,1,1,1
+access_hotel_guest_manager,access.hotel.guest.manager,model_hotel_guest,hotel_management.group_hotel_management_manager,1,1,1,1
+access_hotel_guest_admin,access.hotel.guest.admin,model_hotel_guest,hotel_management.group_hotel_management_admin,1,1,1,1
 
 

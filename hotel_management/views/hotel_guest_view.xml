@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <!--Form View-->
+    <record id="hotel_guest_form_view" model="ir.ui.view">
+        <field name="name">hotel.guest.form.view</field>
+        <field name="model">hotel.guest</field>
+        <field name="arch" type="xml">
+            <form string="Guest Details">
+
+                <sheet>
+                    <!--smart button-->
+                    <!--                    <div class="oe_button_box" name="button_box">-->
+                    <!--                        <button type="object" name="action_open_appointments" class="oe_stat_button" icon="fa-solid fa-calendar">-->
+                    <!--                                <field string="Appointments" name="appointment_count" widget="statinfo"/>-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <!--                    &lt;!&ndash;Sequence code&ndash;&gt;-->
+                    <!--                    <div class="oe_title">-->
+                    <!--                        <h1>-->
+                    <!--                            <field name="" readonly="1"/>-->
+                    <!--                        </h1>-->
+                    <!--                    </div>-->
+                    <group>
+                        <group string="Guest Detail">
+                            <field name="name"/>
+                            <field name="gender" widget="radio"/>
+                            <field name="email"/>
+                            <field name="phone_no"/>
+                            <field name="date_of_birth"/>
+                            <field name="age" force_save="1"/>
+                            <field name="guest_type"/>
+                        </group>
+                        <notebook>
+                            <page string="Bookings">
+                                <field name="booking_ids" options="{'no_create': True, 'no_create_edit':True}">
+                                    <list editable="bottom">
+                                        <field name="category_id" width="200"/>
+                                        <field name="room_ids" width="200" widget="many2many_tags"/>
+                                        <field name="number_of_guests" width="200"/>
+                                        <field name="number_of_rooms" width="200"/>
+                                        <field name="check_in_date" width="200"/>
+                                        <field name="check_out_date" width="200"/>
+                                        <field name="total_duration" width="200"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--List View-->
+    <record id="hotel_guest_list_view" model="ir.ui.view">
+        <field name="name">hotel.guest.list.view</field>
+        <field name="model">hotel.guest</field>
+        <field name="arch" type="xml">
+            <list string="Guests">
+                <field name="name"/>
+                <field name="phone_no"/>
+                <field name="guest_type"/>
+            </list>
+        </field>
+    </record>
+
+    <!--Menu action-->
+    <record id="hotel_guest_act_window" model="ir.actions.act_window">
+        <field name="name">Guests</field>
+        <field name="res_model">hotel.guest</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!--Menu Item-->
+    <menuitem id="hotel_guest_menu" name="Guest Registration" parent="hotel_management_root_menu_id"
+              action="hotel_guest_act_window"/>
+
+</odoo>

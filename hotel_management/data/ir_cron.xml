@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data noupdate="1">
+        <record id="next_day_booking_mail_to_admin" model="ir.cron">
+            <field name="name">Generate Next Days Booking Mail</field>
+            <field name="model_id" ref="hotel_management.model_hotel_booking"/>
+            <field name="state">code</field>
+            <field name="code">model.action_generate_next_day_booking_mail()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

@@ -8,8 +8,7 @@
         <field name="arch" type="xml">
             <form string="Rooms">
                 <header>
-                    <!--                    <button name="" string="" type="object" />-->
-                    <field name="status" widget="statusbar" statusbar_visible="available,booked"/>
+                    <field name="status" widget="statusbar" statusbar_visible="available,reserved"/>
                 </header>
                 <sheet>
                     <!--smart button-->
@@ -26,20 +25,15 @@
                     </div>
                     <group>
                         <group string="Rooms Detail">
-                            <field name="is_available"/>
+                            <field name="is_available" readonly="1"/>
                             <field name="category_id"/>
                         </group>
-
-                        <!--                        <notebook>-->
-                        <!--                            <page string="">-->
-                        <!--                                <field name="">-->
-                        <!--                                    <list editable="bottom">-->
-                        <!--                                        <field name=""/>-->
-                        <!--                                    </list>-->
-                        <!--                                </field>-->
-                        <!--                            </page>-->
-                        <!--                        </notebook>-->
                     </group>
+                    <notebook>
+                        <page string="Bookings">
+                            <field name="booking_ids"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

@@ -34,3 +34,4 @@
     # 'application': True,
     # 'auto_install': False,
 }
+# --limit-time-cpu=6000 --limit-time-real=10000

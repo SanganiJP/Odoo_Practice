@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo noupdate="1">
+    <!--Email template -->
+    <record id="room_booking_confirmation_mail_template" model="mail.template">
+        <field name="name">Room Booking Confirmation</field>
+        <field name="model_id" ref="hotel_management.model_hotel_booking"/>
+        <field name="email_from">{{object.env.user.email}}</field>
+        <field name="email_to">{{object.guest_id.email}}</field>
+        <!--        <field name="auto_delete" eval="True"/>-->
+        <field name="subject">Room Booking Confirmation : {{object.name}}</field>
+        <field name="description">Sent to guest for Room Booking confirmation</field>
+        <field name="body_html" type="html">
+            <p>Hello,
+                <strong>
+                    <t t-out="object.guest_id.name"/>
+                </strong>
+            </p>
+            <p>
+                Your Hotel reservation is confirmed.
+            </p>
+            <p>Thank you</p>
+            <p>Best regards,</p>
+            <p>
+                <t t-out="object.env.user.name"/>
+            </p>
+        </field>
+    </record>
+
+    <record id="email_template_next_day_booking_mail" model="mail.template">
+        <field name="name">Next Booking</field>
+        <field name="model_id" ref="hotel_management.model_hotel_booking"/>
+        <field name="email_from">{{object.env.user.company_id.email}}</field>
+        <field name="email_to">{{object.env.user.email}}</field>
+        <!--        <field name="auto_delete" eval="True"/>-->
+        <field name="subject">Tomorrows Booking Detail</field>
+        <field name="description">Sent to admin for booking detail.</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                <p>Good Morning
+                    <strong>
+                        <t t-out="object.env.user.name"/>
+                    </strong>
+                    ,
+                </p>
+                <p>
+                    Please find the details of the hotel booking for the next day:
+                </p>
+                <table style="border: 1px solid #ddd; border-collapse: collapse; width: 100%; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2; text-align: left;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Booking number</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Guest name</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Date of Checkin</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Date of Checkout</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="object.get_generate_next_day_booking_data()" t-as="booking">
+                            <tr>
+                                <t t-out="booking_index+1"/>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="booking.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="booking.guest_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="booking.check_in_date"/>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">
+                                    <t t-out="booking.check_out_date"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p>Best Regards,</p>
+                <p>
+                    <strong>
+                        <t t-out="object.env.user.company_id.name"/>
+                    </strong>
+                </p>
+            </div>
+        </field>
+    </record>
+
+</odoo>
