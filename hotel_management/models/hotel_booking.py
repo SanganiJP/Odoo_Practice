@@ -57,7 +57,7 @@ class HotelBooking(models.Model):
         """ This method confirm room reservation. update room status to Reserved"""
         self.state = 'confirm'
         for room in self.room_ids:
-            room_rec = self.env['hotel.room'].search([('id', '=', room)])
+            room_rec = self.env['hotel.room'].search([('id', '=', room.id)])
             if room_rec:
                 room_rec.write({
                     'booking_ids': [(4, self.id)],
@@ -72,7 +72,7 @@ class HotelBooking(models.Model):
         """ This method cancel the reservation"""
         self.state = 'cancel'
         for room in self.room_ids:
-            room_rec = self.env['hotel.room'].search([('id', '=', room)])
+            room_rec = self.env['hotel.room'].search([('id', '=', room.id)])
             if room_rec:
                 room_rec.write({
                     'is_available': True,

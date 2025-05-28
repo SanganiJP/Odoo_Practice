@@ -12,6 +12,8 @@
 
     <record id="group_hotel_management_admin" model="res.groups">
         <field name="name">Hotel Management Admin</field>
+        <field name="implied_ids" eval="[(4, ref('group_hotel_management_manager')), (4, ref('group_hotel_management_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
 </odoo>

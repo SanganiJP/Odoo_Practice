@@ -14,6 +14,8 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Booking Confirm" invisible="state != 'confirm'"/>
+                    <widget name="web_ribbon" title="Cancel" invisible="state != 'cancel'" bg_color="bg-danger"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
@@ -58,9 +60,9 @@
                 <field name="name"/>
                 <field name="guest_id"/>
                 <field name="phone_no"/>
-                <field name="check_in_date"/>
-                <field name="check_out_date"/>
-                <field name="total_amount"/>
+                <field name="check_in_date" width="200"/>
+                <field name="check_out_date" width="200"/>
+                <field name="total_amount" width="200"/>
             </list>
         </field>
     </record>

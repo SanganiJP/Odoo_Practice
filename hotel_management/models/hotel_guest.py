@@ -9,7 +9,9 @@ class HotelGuest(models.Model):
     _name = 'hotel.guest'
     _description = 'Hotel Guest'
 
-    name = fields.Char(string="Name", required=True, copy=False)
+
+    name = fields.Char(string="Guest ID", required=True, copy=False, default='New', index=True)
+    guest = fields.Char(string="Guest", required=True, copy=False)
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female')], default='male', string="Gender", required=True)
@@ -21,6 +23,7 @@ class HotelGuest(models.Model):
     date_of_birth = fields.Date(string="Birth Date")
     age = fields.Integer(string="Age", readonly=True, required=True)
     booking_ids = fields.One2many("hotel.booking", "guest_id", string="Bookings")
+
 
     @api.onchange('date_of_birth')
     def onchange_date_of_birth(self):
@@ -56,3 +59,9 @@ class HotelGuest(models.Model):
                 if phone_numbers > 1:
                     raise UserError("Phone no already exists.")
 
+    @api.model_create_multi
+    def create(self, val_list):
+        res = super(HotelGuest, self).create(val_list)
+        for record in res:
+            record.name = self.env["ir.sequence"].next_by_code('hotel.guest')
+        return res

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo noupdate="1">
-    <record id="booking_id_sequence_" model="ir.sequence">
+    <record id="booking_id_sequence" model="ir.sequence">
         <field name="name">Booking ID</field>
         <field name="code">hotel.booking</field>
         <field name="prefix">RES-</field>
+        <field name="padding">4</field>
+    </record>
+    <record id="hotel_guest_sequence" model="ir.sequence">
+        <field name="name">Guest ID</field>
+        <field name="code">hotel.guest</field>
+        <field name="prefix">GUEST-</field>
         <field name="padding">4</field>
     </record>
 </odoo>
